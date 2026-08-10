@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CCN Content Studio — v15</title><link rel="stylesheet" href="editor.css"></head>
+<body>
+<header><img src="assets/ui/callaway-chargers-logo.png" alt="Callaway Chargers JROTC"><nav><a href="index.html">Open TV Home Screen</a><button id="reset" type="button">Reset Defaults</button></nav></header>
+<main>
+  <section class="intro"><span>CONTENT STUDIO — V15</span><h1>Control what appears today</h1><p>Version 15 adds Cadet of the Year to the Spotlight Gallery. You can now choose Cadet of the Month, Cadet of the Week, or Cadet of the Year for each spotlight, each with its own photo and show/hide controls.</p></section>
+  <form id="editorForm">
+    <fieldset>
+      <legend>Screen Titles & Visibility</legend>
+      <label>Lineup heading<input name="settings.lineupTitle"></label>
+      <div class="screen-controls">
+        <div class="screen-control"><label class="switch-row"><input type="checkbox" name="display.lesson"> Show Today’s Lesson</label><label>Section label<input name="titles.lessonLabel"></label></div>
+        <div class="screen-control"><label class="switch-row"><input type="checkbox" name="display.objective"> Show Objective</label><label>Section label<input name="titles.objectiveLabel"></label><label>Main title<input name="titles.objectiveTitle"></label></div>
+        <div class="screen-control"><label class="switch-row"><input type="checkbox" name="display.terms"> Show Key Terms</label><label>Section label<input name="titles.termsLabel"></label><label>Main title<input name="titles.termsTitle"></label></div>
+        <div class="screen-control"><label class="switch-row"><input type="checkbox" name="display.exit"> Show Exit Questions</label><label>Section label<input name="titles.exitLabel"></label><label>Main title<input name="titles.exitTitle"></label></div>
+        <div class="screen-control"><label class="switch-row"><input type="checkbox" name="display.event"> Show Upcoming Event</label><label>Section label<input name="titles.eventLabel"></label></div>
+        <div class="screen-control"><label class="switch-row"><input type="checkbox" name="display.announcements"> Show Announcements</label><label>Section label<input name="titles.announcementLabel"></label></div>
+        <div class="screen-control"><label class="switch-row"><input type="checkbox" name="display.spotlights"> Show Spotlight Gallery</label><p class="control-note">Individual spotlights can still be hidden below.</p></div>
+        <div class="screen-control"><label class="switch-row"><input type="checkbox" name="display.service"> Show Community Impact</label><label>Section label<input name="titles.serviceLabel"></label><label>Main title<input name="titles.serviceTitle"></label></div>
+      </div>
+    </fieldset>
+
+    <fieldset><legend>Today’s Lesson</legend>
+      <label>Lesson title<input name="lesson.title"></label>
+      <label>Lesson summary<textarea name="lesson.hook"></textarea></label>
+      <div class="row"><label>LET<input name="lesson.let"></label><label>Lesson<input name="lesson.lesson"></label><label>Duration<input name="lesson.duration"></label></div><input type="hidden" name="lesson.period">
+      <label>Objective<textarea name="lesson.objective"></textarea></label>
+      <label>Essential question<textarea name="lesson.essentialQuestion"></textarea></label>
+    </fieldset>
+
+    <fieldset><div class="fieldset-head"><legend>Key Terms</legend><button id="addTerm" class="secondary-action" type="button">+ Add Term</button></div><div id="terms"></div></fieldset>
+    <fieldset><div class="fieldset-head"><legend>Exit Questions</legend><button id="addQuestion" class="secondary-action" type="button">+ Add Exit Question</button></div><div id="questions"></div></fieldset>
+    <fieldset><div class="fieldset-head"><legend>Announcements</legend><button id="addUpdate" class="secondary-action" type="button">+ Add Announcement</button></div><div id="updates"></div></fieldset>
+
+    <fieldset><legend>Upcoming Event</legend>
+      <label>Event title<input name="operation.title"></label>
+      <div class="row"><label>Date and time<input type="datetime-local" name="operation.date"></label><label>Location<input name="operation.location"></label></div>
+      <label>Event details<input name="operation.detail"></label>
+      <label class="switch-row inline-toggle"><input type="checkbox" name="operation.showPhoto"> Show event photo on TV</label>
+      <label class="upload">Upcoming Event photo<input id="eventPhotoUpload" type="file" accept="image/*"><small id="eventPhotoStatus">Upload one landscape photo. The same photo will be used for the large featured event and its lineup card. Uncheck “Show event photo on TV” anytime to hide it without deleting it.</small></label>
+    </fieldset>
+
+    <fieldset class="spotlight-gallery-fieldset">
+      <div class="fieldset-head"><legend>Cadet Spotlight Gallery</legend><button id="addSpotlight" class="secondary-action" type="button">+ Add Spotlight</button></div>
+      <p class="gallery-help">Add multiple Cadet of the Week, Month, or Year slides. Each entry can have its own photo. Hide an entry or just its photo anytime without deleting it.</p>
+      <div id="spotlights"></div>
+    </fieldset>
+
+    <fieldset><legend>Playback</legend><label>Seconds per featured item<input type="number" min="6" max="30" name="settings.secondsPerFeature"></label></fieldset>
+    <div class="actions"><button type="submit">Save CCN Display</button><a href="index.html">View TV Home Screen</a><span id="status"></span></div>
+  </form>
+</main>
+<script src="content.js"></script><script src="editor.js"></script>
+</body></html>
