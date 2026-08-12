@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#04152f" />
+  <title>Callaway Command Network — Shared TV v16</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main id="app" class="app" aria-live="polite">
+    <div id="heroBackground" class="hero-background"></div>
+    <div class="hero-scrim"></div>
+
+    <header class="topbar">
+      <img class="brand" src="assets/ui/callaway-chargers-logo.png" alt="Callaway Chargers JROTC" />
+      <nav class="top-nav" aria-label="CCN sections">
+        <button class="nav-pill active" data-filter="all">Home</button>
+        <button class="nav-pill" data-filter="lesson">Today’s Lesson</button>
+        <button class="nav-pill" data-filter="learn">Learn</button>
+        <button class="nav-pill" data-filter="events">Events</button>
+        <button class="nav-pill" data-filter="spotlight">Recognition</button>
+      </nav>
+      <div class="top-status" aria-label="Current time and date">
+        <span class="live-dot"></span>
+        <time id="clock">--:--</time>
+        <span id="date">---</span><span id="syncStatus" class="sync-status">SHARED</span>
+      </div>
+    </header>
+
+    <section class="hero" id="hero">
+      <div class="hero-copy" id="heroCopy"></div>
+      <div class="hero-art-panel" id="heroArtPanel" aria-hidden="true"></div>
+    </section>
+
+    <section class="browse-zone" aria-label="CCN program lineup">
+      <div class="row-heading">
+        <div>
+          <span class="row-kicker">NOW ON CCN</span>
+          <h2 id="rowTitle">Today’s Lineup</h2>
+        </div>
+      </div>
+      <div id="rail" class="rail" role="listbox" aria-label="Today’s content"></div>
+    </section>
+
+    <footer class="footer-strip">
+      <span id="footerMessage">Callaway High School JROTC</span>
+      <strong>MOTIVATE <b>•</b> LEAD <b>•</b> ACHIEVE</strong>
+      <span class="footer-unit">4TH BATTALION CHARGERS</span>
+    </footer>
+
+    <div id="pausedBadge" class="paused-badge" hidden>PLAYBACK PAUSED</div>
+  </main>
+
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
