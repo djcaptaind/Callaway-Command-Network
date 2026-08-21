@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 90">
+  <defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#ff6500"/><stop offset="1" stop-color="#ff9d22"/></linearGradient></defs>
+  <rect x="2" y="2" width="86" height="86" rx="21" fill="#06275f" stroke="url(#g)" stroke-width="4"/>
+  <path d="M62 26c-6-6-13-9-22-9-17 0-29 12-29 28s12 28 29 28c9 0 17-3 23-9L51 50c-3 3-6 4-10 4-7 0-12-4-12-9s5-9 12-9c4 0 7 1 10 4z" fill="#fff"/>
+  <text x="108" y="42" fill="#fff" font-family="Arial Black, Arial" font-size="34" font-weight="900">CCN</text>
+  <text x="108" y="69" fill="#ff7a00" font-family="Arial, sans-serif" font-size="17" font-weight="800" letter-spacing="2">CALLAWAY COMMAND NETWORK</text>
+</svg>

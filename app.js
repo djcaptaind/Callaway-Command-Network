@@ -1,10 +1,6 @@
-(() => {
+(async () => {
   const D = window.CCN_STREAMING_DEFAULTS;
-  const saved = (() => {
-    try { return JSON.parse(localStorage.getItem('ccnStreamingContent') || localStorage.getItem('ccnContent') || 'null'); }
-    catch { return null; }
-  })();
-
+  const clone = o => JSON.parse(JSON.stringify(o));
   const merge = (base, extra) => {
     if (!extra || typeof extra !== 'object') return base;
     const out = Array.isArray(base) ? [...base] : {...base};
@@ -14,18 +10,20 @@
     });
     return out;
   };
-
-  const C = merge(D, saved || {});
-  if (!Array.isArray(saved?.spotlights)) {
-    const migrated=[];
-    const month=saved?.spotlightMonth || saved?.spotlight;
-    const week=saved?.spotlightWeek;
-    if(month?.name) migrated.push({type:saved?.titles?.spotlightMonthLabel || saved?.titles?.spotlightLabel || 'Cadet of the Month',enabled:saved?.display?.spotlightMonth ?? saved?.display?.spotlight ?? true,name:month.name||'',detail:month.detail||'',quote:month.quote||'',badges:month.badges||[],showPhoto:month.showPhoto!==false,portrait:month.portrait||D.spotlights[0].portrait});
-    if(week?.name) migrated.push({type:saved?.titles?.spotlightWeekLabel || 'Cadet of the Week',enabled:saved?.display?.spotlightWeek ?? true,name:week.name||'',detail:week.detail||'',quote:week.quote||'',badges:week.badges||[],showPhoto:week.showPhoto!==false,portrait:week.portrait||D.spotlights[0].portrait});
-    if(migrated.length) C.spotlights=migrated;
-    if(saved?.display?.spotlight!==undefined || saved?.display?.spotlightMonth!==undefined || saved?.display?.spotlightWeek!==undefined) C.display.spotlights=true;
-  }
-
+  const loadShared = async () => {
+    try {
+      const url = new URL('shared-content.json', window.location.href);
+      const res = await fetch(url, {cache:'no-store'});
+      if (!res.ok) throw new Error('shared content unavailable');
+      return await res.json();
+    } catch (err) {
+      return null;
+    }
+  };
+  const shared = await loadShared();
+  let local = null;
+  try { local = JSON.parse(localStorage.getItem('ccnStreamingContent') || localStorage.getItem('ccnContent') || 'null'); } catch { local = null; }
+  const C = merge(merge(clone(D), shared || {}), local || {});
   const escapeHtml = (value='') => String(value).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
   const accentLast = value => {
     const text = escapeHtml(value || '');
@@ -38,6 +36,21 @@
   const daysUntil = value => {
     const d = new Date(value);
     return Number.isNaN(d.getTime()) ? 0 : Math.max(0, Math.ceil((d - new Date())/86400000));
+  };
+
+  const titleClass = value => {
+    const n = String(value || '').trim().length;
+    if (n > 88) return 'title-xxlong';
+    if (n > 64) return 'title-xlong';
+    if (n > 44) return 'title-long';
+    if (n > 28) return 'title-medium';
+    return 'title-short';
+  };
+  const cardTitleClass = value => {
+    const n = String(value || '').trim().length;
+    if (n > 60) return 'card-title-xlong';
+    if (n > 38) return 'card-title-long';
+    return '';
   };
 
   const announcementHeroes = [
@@ -133,14 +146,18 @@
   const rail = document.getElementById('rail');
   const pausedBadge = document.getElementById('pausedBadge');
   const rowTitle = document.getElementById('rowTitle');
+  const featureIndex = document.getElementById('featureIndex');
+  const featureTotal = document.getElementById('featureTotal');
   rowTitle.textContent = C.settings.lineupTitle || 'Today’s Lineup';
+  app.style.setProperty('--feature-seconds', `${seconds}s`);
 
   function renderRail(){
     rail.innerHTML = visibleItems.map((item,i)=>`
       <article class="card ${i===index?'active':''}" role="option" aria-selected="${i===index}" data-index="${i}" tabindex="${i===index?'0':'-1'}">
         <img src="${escapeHtml(item.card)}" alt="" />
         <span class="card-badge">${escapeHtml(item.badge || '')}</span>
-        <div class="card-copy"><span class="tag">${escapeHtml(item.tag)}</span><h3>${escapeHtml(item.title)}</h3></div>
+        <div class="card-copy"><span class="tag">${escapeHtml(item.tag)}</span><h3 class="${cardTitleClass(item.title)}">${escapeHtml(item.title)}</h3></div>
+        <span class="card-progress" aria-hidden="true"></span>
       </article>`).join('');
     rail.querySelectorAll('.card').forEach(card => card.addEventListener('click',()=>show(Number(card.dataset.index),true)));
   }
@@ -191,7 +208,7 @@
       } else {
         heroCopy.innerHTML = `
           <span class="callout">${escapeHtml(item.callout)}</span>
-          <h1>${item.titleHtml}</h1>
+          <h1 class="${titleClass(item.title)}">${item.titleHtml}</h1>
           <div class="meta">${item.meta.filter(Boolean).map(x=>`<span>${escapeHtml(x)}</span>`).join('')}</div>
           <p class="synopsis">${escapeHtml(item.description)}</p>
           <div class="hero-actions">
@@ -215,13 +232,18 @@
 
   function show(n, userAction=false){
     if(!visibleItems.length){
-      heroCopy.innerHTML='<span class="callout">CCN</span><h1>NO CONTENT <span class="accent">SELECTED</span></h1><p class="synopsis">Open the Content Studio and turn on at least one section.</p>';
+      heroCopy.innerHTML='<span class="callout">CCN</span><h1 class="title-medium">NO CONTENT <span class="accent">SELECTED</span></h1><p class="synopsis">Open the Content Studio and turn on at least one section.</p>';
       rail.innerHTML='';
       return;
     }
     index = (n + visibleItems.length) % visibleItems.length;
     const item = visibleItems[index];
     app.dataset.item = item.id.startsWith('announcement-') ? 'announcement' : (item.id.startsWith('spotlight-') ? 'spotlight' : item.id);
+    if(featureIndex) featureIndex.textContent=String(index+1).padStart(2,'0');
+    if(featureTotal) featureTotal.textContent=String(visibleItems.length).padStart(2,'0');
+    app.classList.remove('feature-tick');
+    void app.offsetWidth;
+    app.classList.add('feature-tick');
     renderHero(item);
     renderRail();
     requestAnimationFrame(()=>requestAnimationFrame(()=>centerActive(userAction?'smooth':'auto')));

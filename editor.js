@@ -108,8 +108,7 @@
   document.getElementById('addUpdate').addEventListener('click',()=>{data.announcements.push({headline:'',detail:'',status:''});renderUpdates();status.textContent='New announcement added.'});
   document.getElementById('addSpotlight').addEventListener('click',()=>{data.spotlights.push({type:'Cadet of the Year',enabled:true,name:'',detail:'',quote:'',badges:[],showPhoto:true,portrait:D.spotlights[0].portrait});renderSpotlights();status.textContent='New spotlight added.'});
 
-  form.addEventListener('submit',e=>{
-    e.preventDefault();
+  function collectResult(){
     const result=merge(clone(D),data);
     form.querySelectorAll('[name]').forEach(el=>{
       let value=el.type==='checkbox'?el.checked:el.value;
@@ -130,13 +129,37 @@
       portrait:data.spotlights[i]?.portrait||D.spotlights[0].portrait
     }));
     if (eventPhotoData) result.operation.photo = eventPhotoData;
+    result.settings = result.settings || {};
+    result.settings.updatedAt = new Date().toISOString();
+    return result;
+  }
+
+  function saveLocal(result){
+    localStorage.setItem('ccnStreamingContent',JSON.stringify(result));
+    data=result;
+  }
+
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    try{const result=collectResult();saveLocal(result);status.textContent='Local draft saved. Download Shared Update when ready to publish.';}
+    catch(err){status.textContent='Could not save. Too many or very large photos may exceed browser storage.';}
+  });
+
+  document.getElementById('downloadShared').addEventListener('click',()=>{
     try{
-      localStorage.setItem('ccnStreamingContent',JSON.stringify(result));
-      data=result;
-      status.textContent='Saved. Refresh the TV home screen.';
-    }catch(err){
-      status.textContent='Could not save. Too many or very large photos may exceed browser storage. Remove a photo or use smaller images.';
-    }
+      const result=collectResult(); saveLocal(result);
+      const blob=new Blob([JSON.stringify(result,null,2)],{type:'application/json'});
+      const url=URL.createObjectURL(blob); const a=document.createElement('a');
+      a.href=url; a.download='shared-content.json'; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
+      status.textContent='Downloaded shared-content.json. Upload it to the GitHub /docs folder to publish everywhere.';
+    }catch(err){status.textContent='Could not create the shared update file.';}
+  });
+
+  document.getElementById('importShared').addEventListener('change',async e=>{
+    const file=e.target.files[0]; if(!file) return;
+    try{const imported=JSON.parse(await file.text());localStorage.setItem('ccnStreamingContent',JSON.stringify(imported));status.textContent='Published JSON imported. Reloading editor…';setTimeout(()=>location.reload(),350);}
+    catch(err){status.textContent='That file is not a valid CCN shared-content.json file.';}
   });
 
   document.getElementById('reset').addEventListener('click',()=>{if(confirm('Reset all saved CCN content?')){localStorage.removeItem('ccnStreamingContent');location.reload()}});

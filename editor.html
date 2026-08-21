@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CCN Content Studio — v15</title><link rel="stylesheet" href="editor.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CCN Content Studio — v17</title><link rel="stylesheet" href="editor.css"></head>
 <body>
-<header><img src="assets/ui/callaway-chargers-logo.png" alt="Callaway Chargers JROTC"><nav><a href="index.html">Open TV Home Screen</a><button id="reset" type="button">Reset Defaults</button></nav></header>
+<header><img src="../docs/assets/ui/callaway-chargers-logo.png" alt="Callaway Chargers JROTC"><nav><a href="../docs/index.html">Open Local TV Preview</a><button id="reset" type="button">Reset Defaults</button></nav></header>
 <main>
-  <section class="intro"><span>CONTENT STUDIO — V15</span><h1>Control what appears today</h1><p>Version 15 adds Cadet of the Year to the Spotlight Gallery. You can now choose Cadet of the Month, Cadet of the Week, or Cadet of the Year for each spotlight, each with its own photo and show/hide controls.</p></section>
+  <section class="intro"><span>CONTENT STUDIO — V17 BEYOND + SHARED</span><h1>Control what appears today</h1><p>Edit once, publish once. V17 keeps the shared TV + parent workflow and adds the new cinematic Beyond Mode display. Replace shared-content.json in GitHub Pages and every public device receives the same update.</p></section>
   <form id="editorForm">
     <fieldset>
       <legend>Screen Titles & Visibility</legend>
@@ -48,8 +48,8 @@
     </fieldset>
 
     <fieldset><legend>Playback</legend><label>Seconds per featured item<input type="number" min="6" max="30" name="settings.secondsPerFeature"></label></fieldset>
-    <div class="actions"><button type="submit">Save CCN Display</button><a href="index.html">View TV Home Screen</a><span id="status"></span></div>
+    <fieldset class="publish-box"><legend>Publish to TV & Parents</legend><p class="gallery-help">1. Save your draft. 2. Click Download Shared Update. 3. Replace <strong>docs/shared-content.json</strong> in GitHub. That one file updates the TV and Parent View.</p><div class="publish-actions"><button type="submit">Save Local Draft</button><button id="downloadShared" class="publish-btn" type="button">Download Shared Update</button><label class="import-label">Import Published JSON<input id="importShared" type="file" accept="application/json,.json"></label><a href="../docs/index.html">Preview TV</a><a href="../docs/parent.html">Preview Parent View</a></div></fieldset><div class="actions"><span id="status"></span></div>
   </form>
 </main>
-<script src="content.js"></script><script src="editor.js"></script>
+<script src="../docs/content.js"></script><script src="editor.js"></script>
 </body></html>
