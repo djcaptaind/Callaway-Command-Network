@@ -2,3 +2,113 @@
 *{box-sizing:border-box}html{background:#01050a}body{margin:0;min-height:100vh;color:var(--white);font-family:"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 76% 0,rgba(10,112,255,.16),transparent 31%),radial-gradient(circle at 0 78%,rgba(255,106,0,.11),transparent 26%),linear-gradient(150deg,#020811,#06152b 54%,#01050a);background-attachment:fixed}
 body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:linear-gradient(rgba(69,183,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(69,183,255,.07) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(#000,transparent 86%)}
 header{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:11px 4vw;background:rgba(1,6,14,.94);border-bottom:1px solid rgba(69,183,255,.36);box-shadow:0 14px 35px rgba(0,0,0,.38);backdrop-filter:blur(18px)}header img{width:150px;height:82px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(255,106,0,.2))}header nav{display:flex;gap:10px;flex-wrap:wrap}a,button{border:1px solid rgba(69,183,255,.25);text-decoration:none;border-radius:7px;padding:11px 15px;font-weight:900;cursor:pointer;letter-spacing:.25px;transition:.18s}a{background:linear-gradient(180deg,#0b2b52,#071a34);color:#fff}button{background:linear-gradient(100deg,#e95800,#ff7c14);color:#fff;border-color:rgba(255,131,39,.55)}a:hover,button:hover{transform:translateY(-1px);box-shadow:0 0 20px rgba(255,106,0,.2)}main{width:min(1220px,94vw);margin:auto;padding:42px 0 100px}.intro{position:relative;padding:28px 30px;border:1px solid rgba(69,183,255,.26);background:linear-gradient(120deg,rgba(5,21,45,.92),rgba(4,34,65,.68));box-shadow:0 20px 50px rgba(0,0,0,.3);clip-path:polygon(0 0,98% 0,100% 18%,100% 100%,2% 100%,0 82%)}.intro:after{content:"";position:absolute;left:0;bottom:0;width:45%;height:3px;background:linear-gradient(90deg,var(--orange),transparent)}.intro span{color:var(--orange2);font-weight:950;letter-spacing:2px;font-size:13px}.intro h1{font-family:Impact,"Arial Black",sans-serif;font-size:clamp(42px,5vw,70px);text-transform:uppercase;letter-spacing:1px;line-height:.95;margin:8px 0 10px}.intro p{color:#c5d2df;font-size:17px;max-width:900px;line-height:1.5;margin:0}form{display:grid;gap:18px;margin-top:24px}fieldset{position:relative;border:1px solid rgba(69,183,255,.22);background:linear-gradient(145deg,rgba(4,19,41,.88),rgba(3,13,29,.9));padding:24px;border-radius:12px;box-shadow:0 18px 45px rgba(0,0,0,.26)}fieldset:before{content:"";position:absolute;left:0;top:18px;width:4px;height:34px;background:var(--orange);box-shadow:0 0 13px rgba(255,106,0,.6)}legend{padding:0 11px;font-family:Impact,"Arial Black",sans-serif;text-transform:uppercase;font-size:22px;letter-spacing:.8px;color:#fff}label{display:grid;gap:7px;margin:12px 0;color:#d8e3ef;font-weight:800}input,textarea,select{width:100%;border-radius:7px;border:1px solid rgba(69,183,255,.22);background:#06152d;color:#fff;padding:12px 13px;font:inherit;outline:none}input:focus,textarea:focus,select:focus{border-color:#46b7ff;box-shadow:0 0 0 2px rgba(69,183,255,.1)}textarea{min-height:90px;resize:vertical}.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:13px}.screen-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:13px}.screen-control{padding:14px;border:1px solid rgba(69,183,255,.16);background:rgba(2,12,28,.58);border-radius:9px}.switch-row{display:flex;align-items:center;gap:10px;color:#fff}.switch-row input{width:auto;accent-color:var(--orange);transform:scale(1.15)}.control-note,.gallery-help{color:#9db0c4;font-size:13px;line-height:1.45}.fieldset-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.secondary-action{background:linear-gradient(180deg,#123d70,#08264c);border-color:rgba(69,183,255,.36)}.repeat{margin:17px 0;padding:14px 14px 14px 18px;border-left:4px solid var(--orange);background:linear-gradient(90deg,rgba(255,106,0,.07),rgba(3,20,44,.48));border-radius:8px}.repeat-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px}.repeat-toolbar strong{color:#fff;letter-spacing:.5px}.remove-btn{background:linear-gradient(180deg,#7b2424,#4d1212);border-color:rgba(255,128,128,.2);padding:8px 11px}.upload small{color:#91a5bb;font-weight:500;line-height:1.4}.spotlight-editor-card{margin:18px 0;padding:18px;border:1px solid rgba(69,183,255,.25);background:linear-gradient(145deg,rgba(4,23,48,.96),rgba(5,47,88,.55));border-radius:10px;box-shadow:inset 0 0 30px rgba(10,112,255,.04)}.spotlight-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:11px;border-bottom:1px solid rgba(255,255,255,.09)}.spotlight-card-head strong{display:block;font-size:20px}.spotlight-index{display:block;color:var(--orange2);font-size:10px;font-weight:950;letter-spacing:1.3px}.spotlight-card-actions{display:flex;gap:8px}.duplicate-btn{background:linear-gradient(180deg,#134783,#0b2d58);padding:8px 11px}.empty-gallery{padding:30px;text-align:center;color:#9eb2c7;border:1px dashed rgba(69,183,255,.25)}.publish-box{border-color:rgba(255,106,0,.38);background:linear-gradient(135deg,rgba(45,20,4,.5),rgba(4,28,56,.85))}.publish-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.publish-btn{box-shadow:0 0 20px rgba(255,106,0,.16)}.import-label{display:inline-flex;align-items:center;background:#0a274d;border:1px solid rgba(69,183,255,.28);border-radius:7px;padding:9px 12px;margin:0;cursor:pointer}.import-label input{display:none}.actions{position:sticky;bottom:16px;z-index:20;display:flex;align-items:center;min-height:54px;padding:13px 16px;background:rgba(1,9,20,.95);border:1px solid rgba(69,183,255,.25);border-radius:10px;backdrop-filter:blur(18px);box-shadow:0 12px 36px rgba(0,0,0,.38)}#status{font-weight:850;color:#7fd1ff}@media(max-width:760px){header{align-items:flex-start;flex-direction:column}.intro h1{font-size:42px}.screen-controls{grid-template-columns:1fr}.publish-actions{align-items:stretch;flex-direction:column}.publish-actions>*{width:100%;text-align:center}}
+
+
+/* ============================================================
+   V18.6 — ONE-CLICK GITHUB PUBLISH
+   ============================================================ */
+.github-publish-box{
+  border-color:rgba(70,184,255,.45);
+  background:
+    radial-gradient(circle at 88% 8%,rgba(0,116,255,.14),transparent 30%),
+    linear-gradient(150deg,rgba(3,19,42,.96),rgba(3,10,23,.98));
+}
+.github-publish-grid{
+  display:grid;
+  grid-template-columns:2fr .7fr 1.45fr;
+  gap:14px;
+  margin:18px 0;
+}
+.github-publish-grid label{
+  margin:0;
+}
+.github-publish-grid .token-label{
+  grid-column:1/-1;
+}
+.token-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:9px;
+  align-items:center;
+}
+.compact-btn{
+  min-width:74px;
+  height:44px;
+}
+.github-safety{
+  display:flex;
+  gap:14px;
+  align-items:center;
+  padding:11px 14px;
+  margin:12px 0 17px;
+  border-left:4px solid #ff7600;
+  background:rgba(255,118,0,.08);
+  color:#dbe8f6;
+}
+.github-safety strong{
+  color:#ff9a42;
+  font-size:12px;
+  letter-spacing:1px;
+  white-space:nowrap;
+}
+.github-safety span{
+  font-size:12px;
+}
+.publish-actions-primary{
+  margin-bottom:10px;
+}
+.publish-actions-secondary{
+  border-top:1px solid rgba(255,255,255,.08);
+  padding-top:13px;
+}
+.github-publish-btn{
+  background:linear-gradient(100deg,#ff6200,#ff8d22);
+  color:#fff;
+  border:1px solid #ffa95f;
+  box-shadow:0 0 22px rgba(255,98,0,.2);
+}
+.github-publish-btn:hover{
+  filter:brightness(1.08);
+  box-shadow:0 0 30px rgba(255,98,0,.32);
+}
+.github-publish-btn:disabled,
+.secondary-action:disabled{
+  opacity:.48;
+  cursor:wait;
+}
+.publish-progress{
+  margin-top:16px;
+  padding:12px 14px;
+  border:1px solid rgba(70,184,255,.22);
+  background:rgba(2,12,27,.76);
+}
+.publish-progress-bar{
+  height:7px;
+  border-radius:20px;
+  overflow:hidden;
+  background:rgba(255,255,255,.08);
+  margin-bottom:8px;
+}
+.publish-progress-bar span{
+  display:block;
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,#0d83ff,#ff7400);
+  transition:width .3s ease;
+}
+.publish-progress strong{
+  font-size:12px;
+  color:#d8e7f8;
+}
+@media(max-width:850px){
+  .github-publish-grid{
+    grid-template-columns:1fr;
+  }
+  .github-publish-grid .token-label{
+    grid-column:auto;
+  }
+  .github-safety{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}

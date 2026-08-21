@@ -162,6 +162,177 @@
     catch(err){status.textContent='That file is not a valid CCN shared-content.json file.';}
   });
 
+
+  // ==========================================================
+  // V18.6 — Direct GitHub publishing
+  // Token is intentionally never saved to localStorage.
+  // ==========================================================
+  const githubRepo = document.getElementById('githubRepo');
+  const githubBranch = document.getElementById('githubBranch');
+  const githubPath = document.getElementById('githubPath');
+  const githubToken = document.getElementById('githubToken');
+  const publishGitHub = document.getElementById('publishGitHub');
+  const testGitHub = document.getElementById('testGitHub');
+  const toggleToken = document.getElementById('toggleToken');
+  const publishProgress = document.getElementById('publishProgress');
+  const publishProgressFill = document.getElementById('publishProgressFill');
+  const publishProgressText = document.getElementById('publishProgressText');
+
+  function githubConfig(){
+    const repo=(githubRepo?.value||'').trim();
+    const branch=(githubBranch?.value||'main').trim()||'main';
+    const path=(githubPath?.value||'docs/shared-content.json').trim().replace(/^\/+/,'');
+    const token=(githubToken?.value||'').trim();
+    if(!/^[^/\s]+\/[^/\s]+$/.test(repo)) throw new Error('Repository must look like owner/repository.');
+    if(!path) throw new Error('Shared content path is required.');
+    if(!token) throw new Error('Paste your GitHub fine-grained token first.');
+    return {repo,branch,path,token};
+  }
+
+  function githubHeaders(token){
+    return {
+      'Accept':'application/vnd.github+json',
+      'Authorization':`Bearer ${token}`,
+      'X-GitHub-Api-Version':'2022-11-28',
+      'Content-Type':'application/json'
+    };
+  }
+
+  function utf8ToBase64(text){
+    const bytes=new TextEncoder().encode(text);
+    let binary='';
+    const chunk=0x8000;
+    for(let i=0;i<bytes.length;i+=chunk){
+      binary+=String.fromCharCode(...bytes.subarray(i,i+chunk));
+    }
+    return btoa(binary);
+  }
+
+  function setPublishProgress(percent,text){
+    if(publishProgress) publishProgress.hidden=false;
+    if(publishProgressFill) publishProgressFill.style.width=`${Math.max(0,Math.min(100,percent))}%`;
+    if(publishProgressText) publishProgressText.textContent=text;
+  }
+
+  async function githubJson(url,options={}){
+    const res=await fetch(url,options);
+    let payload=null;
+    const raw=await res.text();
+    if(raw){
+      try{payload=JSON.parse(raw);}catch{payload={message:raw};}
+    }
+    if(!res.ok){
+      const msg=payload?.message||`${res.status} ${res.statusText}`;
+      throw new Error(msg);
+    }
+    return payload;
+  }
+
+  async function testGitHubConnection(){
+    const {repo,branch,path,token}=githubConfig();
+    setPublishProgress(20,'Checking repository access…');
+    const repoInfo=await githubJson(`https://api.github.com/repos/${repo}`,{
+      headers:githubHeaders(token)
+    });
+    setPublishProgress(55,'Checking shared-content.json access…');
+    let fileExists=false;
+    try{
+      await githubJson(`https://api.github.com/repos/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`,{
+        headers:githubHeaders(token)
+      });
+      fileExists=true;
+    }catch(err){
+      if(!/Not Found/i.test(err.message)) throw err;
+    }
+    setPublishProgress(100,fileExists?'Connection ready. Existing shared-content.json found.':'Connection ready. shared-content.json will be created on publish.');
+    return repoInfo;
+  }
+
+  async function publishDirectlyToGitHub(){
+    const {repo,branch,path,token}=githubConfig();
+    const result=collectResult();
+    saveLocal(result);
+
+    setPublishProgress(8,'Preparing shared CCN update…');
+    const contentText=JSON.stringify(result,null,2);
+
+    setPublishProgress(20,'Reading current GitHub version…');
+    let sha=null;
+    try{
+      const current=await githubJson(`https://api.github.com/repos/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`,{
+        headers:githubHeaders(token)
+      });
+      sha=current?.sha||null;
+    }catch(err){
+      if(!/Not Found/i.test(err.message)) throw err;
+    }
+
+    setPublishProgress(48,'Publishing to GitHub…');
+    const body={
+      message:`Update CCN shared content — ${new Date().toLocaleString()}`,
+      content:utf8ToBase64(contentText),
+      branch
+    };
+    if(sha) body.sha=sha;
+
+    const published=await githubJson(`https://api.github.com/repos/${repo}/contents/${path}`,{
+      method:'PUT',
+      headers:githubHeaders(token),
+      body:JSON.stringify(body)
+    });
+
+    setPublishProgress(82,'GitHub update committed. Waiting for Pages cache…');
+    const commitSha=published?.commit?.sha||'';
+    await new Promise(resolve=>setTimeout(resolve,900));
+
+    setPublishProgress(100,'Published successfully. TV and Parent View can now refresh.');
+    status.textContent=`Published to GitHub${commitSha?` • commit ${commitSha.slice(0,7)}`:''}. Refresh the public TV/Parent page in a few moments.`;
+  }
+
+  if(toggleToken){
+    toggleToken.addEventListener('click',()=>{
+      const showing=githubToken.type==='text';
+      githubToken.type=showing?'password':'text';
+      toggleToken.textContent=showing?'Show':'Hide';
+    });
+  }
+
+  if(testGitHub){
+    testGitHub.addEventListener('click',async()=>{
+      try{
+        testGitHub.disabled=true;
+        status.textContent='Testing GitHub connection…';
+        await testGitHubConnection();
+        status.textContent='GitHub connection is ready.';
+      }catch(err){
+        setPublishProgress(100,'Connection failed.');
+        status.textContent=`GitHub connection failed: ${err.message}`;
+      }finally{
+        testGitHub.disabled=false;
+      }
+    });
+  }
+
+  if(publishGitHub){
+    publishGitHub.addEventListener('click',async()=>{
+      const ok=confirm('Publish the current CCN content to GitHub now? This will update the shared TV and Parent View data.');
+      if(!ok) return;
+      try{
+        publishGitHub.disabled=true;
+        testGitHub && (testGitHub.disabled=true);
+        status.textContent='Publishing CCN update to GitHub…';
+        await publishDirectlyToGitHub();
+      }catch(err){
+        setPublishProgress(100,'Publish failed.');
+        status.textContent=`GitHub publish failed: ${err.message}`;
+      }finally{
+        publishGitHub.disabled=false;
+        testGitHub && (testGitHub.disabled=false);
+      }
+    });
+  }
+
+
   document.getElementById('reset').addEventListener('click',()=>{if(confirm('Reset all saved CCN content?')){localStorage.removeItem('ccnStreamingContent');location.reload()}});
   renderTerms();renderQuestions();renderUpdates();renderSpotlights();
 })();

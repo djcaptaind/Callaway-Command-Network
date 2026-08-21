@@ -71,13 +71,15 @@
   if(C.display?.spotlights!==false && Array.isArray(C.spotlights)){
     C.spotlights.filter(s=>s&&s.enabled!==false&&s.name).forEach((s,i)=>{
       const t=(s.type||'').toLowerCase(); const badge=t.includes('year')?'YEAR':t.includes('month')?'MONTH':'WEEK';
-      items.push({id:`spotlight-${i}`,group:'spotlight',tag:s.type||'CADET SPOTLIGHT',callout:'RECOGNITION',title:s.name,titleHtml:(()=>{const p=esc(s.name).split(/\s+/);const last=p.pop()||'';return `${p.join(' ')} <span class="accent">${last}</span>`})(),description:s.detail||'',meta:s.badges||[],context:s.quote?`“${s.quote}”`:'',hero:'assets/photos/hero-spotlight-clean.jpg',card:'assets/photos/card-spotlight-clean.jpg',badge,portrait:s.portrait,showPhoto:s.showPhoto!==false});
+      const portraitVisible=s.showPhoto!==false && Boolean(s.portrait);
+      items.push({id:`spotlight-${i}`,group:'spotlight',tag:s.type||'CADET SPOTLIGHT',callout:'RECOGNITION',title:s.name,titleHtml:(()=>{const p=esc(s.name).split(/\s+/);const last=p.pop()||'';return `${p.join(' ')} <span class="accent">${last}</span>`})(),description:s.detail||'',meta:s.badges||[],context:s.quote?`“${s.quote}”`:'',hero:'assets/photos/hero-spotlight-clean.jpg',card:portraitVisible?s.portrait:'assets/photos/card-spotlight-clean.jpg',badge,portrait:s.portrait,showPhoto:s.showPhoto!==false});
     });
   }
 
   if(C.display?.service!==false) items.push({id:'service',group:'spotlight',tag:C.titles?.serviceLabel||'COMMUNITY IMPACT',callout:'CALLAWAY PRIDE',title:C.titles?.serviceTitle||'SERVICE IN ACTION',titleHtml:accentLast(C.titles?.serviceTitle||'SERVICE IN ACTION'),description:'Leadership is measured by the positive impact we create for others.',meta:['Community','Teamwork','Service'],context:'MAKE A DIFFERENCE.',hero:'assets/photos/hero-service.jpg',card:'assets/photos/card-service.jpg',badge:'IMPACT'});
 
   const app=document.getElementById('app'), heroBg=document.getElementById('heroBackground'), heroCopy=document.getElementById('heroCopy'), rail=document.getElementById('rail'), rowTitle=document.getElementById('rowTitle'), featureIndex=document.getElementById('featureIndex'), featureTotal=document.getElementById('featureTotal'), pausedBadge=document.getElementById('pausedBadge');
+  const spotlightPhotoPanel=document.getElementById('spotlightPhotoPanel'), spotlightPhoto=document.getElementById('spotlightPhoto'), spotlightPhotoType=document.getElementById('spotlightPhotoType'), spotlightPhotoName=document.getElementById('spotlightPhotoName');
   let visible=[...items],index=0,timer=null,paused=!(C.settings?.autoplay!==false),seconds=Math.max(6,Number(C.settings?.secondsPerFeature||11));
   app.style.setProperty('--feature-seconds',`${seconds}s`);
   rowTitle.textContent=C.settings?.lineupTitle||"Today's Lineup";
@@ -110,8 +112,22 @@
   function renderHero(item){
     heroCopy.classList.add('fade');
     setTimeout(()=>{
+      const isSpotlight=item.id.startsWith('spotlight-');
+      const showSpotlightPhoto=isSpotlight && item.showPhoto && item.portrait;
+      if(spotlightPhotoPanel){
+        spotlightPhotoPanel.hidden=!showSpotlightPhoto;
+        spotlightPhotoPanel.classList.toggle('visible',Boolean(showSpotlightPhoto));
+      }
+      if(showSpotlightPhoto && spotlightPhoto){
+        spotlightPhoto.src=item.portrait;
+        spotlightPhotoType.textContent=item.tag||'CADET SPOTLIGHT';
+        spotlightPhotoName.textContent=item.title||'';
+      } else if(spotlightPhoto){
+        spotlightPhoto.removeAttribute('src');
+      }
       heroBg.classList.remove('animate'); heroBg.style.backgroundImage=`url('${item.hero}')`; requestAnimationFrame(()=>heroBg.classList.add('animate'));
-      heroCopy.classList.remove('terms-mode','exit-mode','objective-mode','term-count-1','term-count-2','term-count-3','term-count-4','term-count-many','exit-count-1','exit-count-2','exit-count-3','exit-count-4','exit-count-many','objective-long','objective-xlong');
+      heroCopy.classList.remove('terms-mode','exit-mode','objective-mode','spotlight-mode','term-count-1','term-count-2','term-count-3','term-count-4','term-count-many','exit-count-1','exit-count-2','exit-count-3','exit-count-4','exit-count-many','objective-long','objective-xlong');
+      if(showSpotlightPhoto) heroCopy.classList.add('spotlight-mode');
       if(item.id==='terms'){
         const tc=C.keyTerms.length;
         heroCopy.classList.add('terms-mode',tc<=4?`term-count-${tc}`:'term-count-many');

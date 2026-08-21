@@ -436,3 +436,99 @@ linear-gradient(0deg,rgba(2,7,13,.65),transparent 48%)}
     font-size:clamp(15px,1.18vw,20px)!important;
   }
 }
+
+
+/* ============================================================
+   V18.5 — SPOTLIGHT PHOTO FIX
+   Cadet of Week / Month / Year uploaded portrait is now used
+   on both the hero feature and the lineup card.
+   ============================================================ */
+.spotlight-photo-panel{
+  position:absolute;
+  z-index:7;
+  top:5%;
+  right:3.2%;
+  bottom:5%;
+  width:31%;
+  min-width:260px;
+  overflow:hidden;
+  background:linear-gradient(160deg,rgba(2,13,30,.98),rgba(4,51,96,.88));
+  border:1px solid rgba(69,183,255,.5);
+  border-right:4px solid var(--orange);
+  box-shadow:0 18px 42px rgba(0,0,0,.48),0 0 28px rgba(10,112,255,.18);
+  clip-path:polygon(0 0,92% 0,100% 8%,100% 100%,8% 100%,0 92%);
+  opacity:0;
+  transform:translateX(18px);
+  transition:opacity .28s ease,transform .28s ease;
+}
+.spotlight-photo-panel.visible{
+  opacity:1;
+  transform:translateX(0);
+}
+.spotlight-photo-panel img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 18%;
+  filter:contrast(1.04) saturate(1.03);
+}
+.spotlight-photo-panel::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(0deg,rgba(1,7,15,.96) 0%,rgba(1,7,15,.24) 34%,transparent 58%),
+    linear-gradient(90deg,rgba(0,0,0,.18),transparent 36%);
+  pointer-events:none;
+}
+.spotlight-photo-caption{
+  position:absolute;
+  z-index:2;
+  left:1.15vw;
+  right:1vw;
+  bottom:1.15vh;
+}
+.spotlight-photo-caption strong{
+  display:block;
+  color:var(--orange2);
+  font-size:clamp(9px,.72vw,12px);
+  letter-spacing:1.1px;
+  margin-bottom:.25vh;
+}
+.spotlight-photo-caption span{
+  display:block;
+  font-family:Impact,"Arial Black",sans-serif;
+  font-size:clamp(21px,1.8vw,31px);
+  line-height:.96;
+  text-transform:uppercase;
+}
+.hero-content.spotlight-mode{
+  width:58%;
+}
+.hero-content.spotlight-mode h1{
+  max-width:100%;
+}
+.hero-content.spotlight-mode .synopsis{
+  max-width:96%;
+}
+
+/* Uploaded portrait should be visible in the small lineup card too. */
+.card[data-id^="spotlight-"] img{
+  object-position:center 18%;
+  filter:brightness(.8) saturate(1.04) contrast(1.03);
+}
+.card[data-id^="spotlight-"]::after{
+  background:linear-gradient(0deg,rgba(2,8,18,.98),rgba(2,8,18,.05) 75%);
+}
+
+/* Short-height Edge viewport. */
+@media (max-height:950px) and (min-width:1200px){
+  .spotlight-photo-panel{
+    top:3.5%;
+    bottom:3.5%;
+    width:29%;
+  }
+  .hero-content.spotlight-mode{width:61%}
+}

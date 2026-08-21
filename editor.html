@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CCN Content Studio — v18.4 Readable Lineup</title><link rel="stylesheet" href="editor.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CCN Content Studio — v18.6 One-Click GitHub Publish</title><link rel="stylesheet" href="editor.css"></head>
 <body>
 <header><img src="../docs/assets/ui/callaway-chargers-logo.png" alt="Callaway Chargers JROTC"><nav><a href="../docs/index.html">Open Local TV Preview</a><button id="reset" type="button">Reset Defaults</button></nav></header>
 <main>
-  <section class="intro"><span>CONTENT STUDIO — V18.4 READABLE LINEUP CONTROL</span><h1>Control what appears today</h1><p>Edit once, publish once. V18 keeps every V17 editing feature and adds the complete Beyond Mode TV display. Edit once, preview locally, then publish shared-content.json so the classroom TV and parent page receive the same update.</p></section>
+  <section class="intro"><span>CONTENT STUDIO — V18.6 ONE-CLICK GITHUB PUBLISH</span><h1>Control what appears today</h1><p>Edit once and publish everywhere. V18.6 keeps the full Beyond Mode editor and adds direct GitHub publishing so the classroom TV and Parent View can receive the same update without manually replacing shared-content.json.</p></section>
   <form id="editorForm">
     <fieldset>
       <legend>Screen Titles & Visibility</legend>
@@ -49,7 +49,54 @@
     </fieldset>
 
     <fieldset><legend>Playback</legend><label>Seconds per featured item<input type="number" min="6" max="30" name="settings.secondsPerFeature"></label></fieldset>
-    <fieldset class="publish-box"><legend>Publish to TV & Parents</legend><p class="gallery-help">1. Save your draft. 2. Click Download Shared Update. 3. Replace <strong>docs/shared-content.json</strong> in GitHub. That one file updates the TV and Parent View.</p><div class="publish-actions"><button type="submit">Save Local Draft</button><button id="downloadShared" class="publish-btn" type="button">Download Shared Update</button><label class="import-label">Import Published JSON<input id="importShared" type="file" accept="application/json,.json"></label><a href="../docs/index.html">Preview TV</a><a href="../docs/parent.html">Preview Parent View</a></div></fieldset><div class="actions"><span id="status"></span></div>
+    <fieldset class="publish-box github-publish-box">
+      <legend>Publish to TV & Parents</legend>
+      <p class="gallery-help"><strong>V18.6:</strong> Save locally, preview, then publish the same content directly to your GitHub Pages site. Your GitHub token is used only for the current page session and is never written into the CCN files or localStorage.</p>
+
+      <div class="github-publish-grid">
+        <label>GitHub repository
+          <input id="githubRepo" value="djcaptaind/Callaway-Command-Network" autocomplete="off">
+          <small>Owner/repository. This is prefilled for your CCN repository.</small>
+        </label>
+        <label>Branch
+          <input id="githubBranch" value="main" autocomplete="off">
+        </label>
+        <label>Shared content path
+          <input id="githubPath" value="docs/shared-content.json" autocomplete="off">
+        </label>
+        <label class="token-label">Fine-grained GitHub token
+          <div class="token-row">
+            <input id="githubToken" type="password" placeholder="Paste token for this session only" autocomplete="off" spellcheck="false">
+            <button id="toggleToken" type="button" class="secondary-action compact-btn">Show</button>
+          </div>
+          <small>Create a fine-grained token restricted to this repository with <strong>Contents: Read and write</strong>. Do not place the token inside any project file.</small>
+        </label>
+      </div>
+
+      <div class="github-safety">
+        <strong>PRIVATE INSTRUCTOR CONTROL</strong>
+        <span>The token remains only in this open editor tab. Refreshing or closing the tab clears it.</span>
+      </div>
+
+      <div class="publish-actions publish-actions-primary">
+        <button type="submit">Save Local Draft</button>
+        <button id="publishGitHub" class="github-publish-btn" type="button">Publish Directly to GitHub</button>
+        <button id="testGitHub" class="secondary-action" type="button">Test GitHub Connection</button>
+      </div>
+
+      <div class="publish-actions publish-actions-secondary">
+        <button id="downloadShared" class="publish-btn" type="button">Download Shared Update</button>
+        <label class="import-label">Import Published JSON<input id="importShared" type="file" accept="application/json,.json"></label>
+        <a href="../docs/index.html">Preview TV</a>
+        <a href="../docs/parent.html">Preview Parent View</a>
+      </div>
+
+      <div id="publishProgress" class="publish-progress" hidden>
+        <div class="publish-progress-bar"><span id="publishProgressFill"></span></div>
+        <strong id="publishProgressText">Preparing update…</strong>
+      </div>
+    </fieldset>
+    <div class="actions"><span id="status"></span></div>
   </form>
 </main>
 <script src="../docs/content.js"></script><script src="editor.js"></script>

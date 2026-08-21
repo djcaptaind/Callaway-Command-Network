@@ -1,3 +1,37 @@
+CALLAWAY COMMAND NETWORK V18.6 — ONE-CLICK GITHUB PUBLISH
+
+NEW IN V18.6
+- Publish shared CCN content directly from instructor/editor.html to GitHub.
+- No manual replacement of docs/shared-content.json is required.
+- GitHub token is never stored in CCN files or localStorage.
+- Token is cleared when the editor tab is refreshed or closed.
+- Built-in Test GitHub Connection button.
+- Manual Download Shared Update remains available as a fallback.
+- All V18.5 Spotlight Photo Fix and Beyond Mode features remain intact.
+
+DIRECT PUBLISH SETUP
+1. Create a fine-grained GitHub personal access token.
+2. Restrict it to: djcaptaind/Callaway-Command-Network
+3. Repository permission required: Contents — Read and write.
+4. Open instructor/editor.html.
+5. Paste the token into the GitHub Publish section.
+6. Click Test GitHub Connection.
+7. Edit CCN and click Publish Directly to GitHub.
+8. The editor updates docs/shared-content.json on main.
+
+SECURITY
+Never paste your token into content.js, shared-content.json, README, GitHub issues, or any other project file.
+The V18.6 editor intentionally keeps it only in the current JavaScript page memory.
+
+CALLAWAY COMMAND NETWORK V18.5 — SPOTLIGHT PHOTO FIX
+
+FIXED IN V18.5
+- Uploaded Cadet of the Year photo now displays on the large recognition feature.
+- Uploaded Cadet of the Week and Cadet of the Month photos use the same behavior.
+- The uploaded cadet portrait is also used on the small Today’s Lineup card.
+- “Show its photo” still hides the picture without deleting the saved portrait.
+- All V18.4 Readable Lineup Mode features remain intact.
+
 CALLAWAY COMMAND NETWORK V18.4 — READABLE LINEUP MODE
 
 NEW IN V18.4
