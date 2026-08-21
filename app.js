@@ -28,6 +28,18 @@
   const accentLast = value => esc(value||'').replace(/\s+(\S+)$/, ' <span class="accent">$1</span>');
   const titleClass = value => { const n=String(value||'').trim().length; return n>88?'title-xxlong':n>64?'title-xlong':n>44?'title-long':n>28?'title-medium':'title-short'; };
   const cardTitleClass = value => { const n=String(value||'').trim().length; return n>60?'card-title-xlong':n>38?'card-title-long':''; };
+  const readableCardTitle = (value, fallback='', maxWords=5) => {
+    const explicit=String(value||'').trim();
+    if(explicit) return explicit;
+    const source=String(fallback||'').trim();
+    if(!source) return '';
+    if(source.length<=34) return source;
+    const clean=source.replace(/[.!?]+$/,'').replace(/\s+/g,' ').trim();
+    const words=clean.split(' ');
+    let short=words.slice(0,maxWords).join(' ');
+    if(short.length>38) short=short.slice(0,38).replace(/\s+\S*$/,'');
+    return short + (short!==clean?'…':'');
+  };
   const toDate = value => { const d=new Date(value); return Number.isNaN(d.getTime())?null:d; };
   const daysUntil = value => { const d=toDate(value); return d?Math.max(0,Math.ceil((d-new Date())/86400000)):0; };
   const formatDate = value => { const d=toDate(value); return d?d.toLocaleDateString([], {weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase():'DATE TBD'; };
@@ -39,8 +51,8 @@
   ];
 
   const items=[];
-  if(C.display?.lesson!==false) items.push({id:'lesson',group:'lesson',tag:C.titles?.lessonLabel||"TODAY'S LESSON",callout:'NOW PLAYING',title:C.lesson?.title||"Today's Lesson",titleHtml:accentLast(C.lesson?.title||"Today's Lesson"),description:C.lesson?.hook||'',meta:[C.lesson?.let,C.lesson?.lesson,C.lesson?.duration],context:'BE THE BEST • COMPETE • LEAD',hero:'assets/photos/hero-lesson.jpg',card:'assets/photos/card-lesson-clean.jpg',badge:'FEATURED'});
-  if(C.display?.objective!==false) items.push({id:'objective',group:'learn',tag:C.titles?.objectiveLabel||'LESSON OBJECTIVE',callout:"TODAY'S FOCUS",title:C.titles?.objectiveTitle||'KNOW THE STANDARD',titleHtml:accentLast(C.titles?.objectiveTitle||'KNOW THE STANDARD'),description:C.lesson?.objective||'',meta:['Objective',C.lesson?.let],context:'LOCK IN. KNOW THE STANDARD.',hero:'assets/photos/hero-objective.jpg',card:'assets/photos/card-objective.jpg',badge:'LEARN'});
+  if(C.display?.lesson!==false) items.push({id:'lesson',group:'lesson',tag:C.titles?.lessonLabel||"TODAY'S LESSON",callout:'NOW PLAYING',title:C.lesson?.title||"Today's Lesson",cardTitle:readableCardTitle(C.lesson?.cardTitle,C.lesson?.title||"Today's Lesson",5),titleHtml:accentLast(C.lesson?.title||"Today's Lesson"),description:C.lesson?.hook||'',meta:[C.lesson?.let,C.lesson?.lesson,C.lesson?.duration],context:'BE THE BEST • COMPETE • LEAD',hero:'assets/photos/hero-lesson.jpg',card:'assets/photos/card-lesson-clean.jpg',badge:'FEATURED'});
+  if(C.display?.objective!==false) items.push({id:'objective',group:'learn',tag:C.titles?.objectiveLabel||'LESSON OBJECTIVE',callout:"TODAY'S FOCUS",title:C.titles?.objectiveTitle||'KNOW THE STANDARD',cardTitle:readableCardTitle(C.titles?.objectiveCardTitle,'Lesson Objective',4),titleHtml:accentLast(C.titles?.objectiveTitle||'KNOW THE STANDARD'),description:C.lesson?.objective||'',meta:['Objective',C.lesson?.let],context:'LOCK IN. KNOW THE STANDARD.',hero:'assets/photos/hero-objective.jpg',card:'assets/photos/card-objective.jpg',badge:'LEARN'});
   if(C.display?.terms!==false && C.keyTerms?.length) items.push({id:'terms',group:'learn',tag:C.titles?.termsLabel||'KEY TERMS',callout:'WORDS TO KNOW',title:C.titles?.termsTitle||'WORDS TO KNOW',titleHtml:accentLast(C.titles?.termsTitle||'WORDS TO KNOW'),description:C.keyTerms.map(x=>x.word).join(' • '),meta:[`${C.keyTerms.length} Terms`],context:'BUILD YOUR VOCABULARY.',hero:'assets/photos/hero-terms.jpg',card:'assets/photos/card-terms.jpg',badge:`${C.keyTerms.length} TERMS`});
   if(C.display?.exit!==false && C.exitQuestions?.length) items.push({id:'exit',group:'learn',tag:C.titles?.exitLabel||'EXIT QUESTIONS',callout:'EXIT TICKET',title:C.titles?.exitTitle||'SHOW WHAT YOU KNOW',titleHtml:accentLast(C.titles?.exitTitle||'SHOW WHAT YOU KNOW'),description:C.exitQuestions[0],meta:[`${C.exitQuestions.length} Questions`],context:'FINISH STRONG.',hero:'assets/photos/hero-exit.jpg',card:'assets/photos/card-exit.jpg',badge:'EXIT'});
 
@@ -86,10 +98,10 @@
   renderEvent(); setInterval(updateCountdown,1000);
 
   function renderRail(){
-    rail.innerHTML=visible.map((item,i)=>`<article class="card ${i===index?'active':''}" data-index="${i}" role="option" aria-selected="${i===index}">
+    rail.innerHTML=visible.map((item,i)=>`<article class="card ${i===index?'active':''}" data-index="${i}" data-id="${esc(item.id)}" role="option" aria-selected="${i===index}">
       <img src="${esc(item.card)}" alt="">
       <span class="card-badge">${esc(item.badge||'')}</span>
-      <div class="card-copy"><span class="tag">${esc(item.tag)}</span><h3 class="${cardTitleClass(item.title)}">${esc(item.title)}</h3></div>
+      <div class="card-copy"><span class="tag">${esc(item.tag)}</span><h3 class="${cardTitleClass(item.cardTitle||item.title)}">${esc(item.cardTitle||item.title)}</h3></div>
       <span class="card-progress"></span>
     </article>`).join('');
     rail.querySelectorAll('.card').forEach(c=>c.addEventListener('click',()=>show(Number(c.dataset.index),true)));
@@ -99,10 +111,19 @@
     heroCopy.classList.add('fade');
     setTimeout(()=>{
       heroBg.classList.remove('animate'); heroBg.style.backgroundImage=`url('${item.hero}')`; requestAnimationFrame(()=>heroBg.classList.add('animate'));
+      heroCopy.classList.remove('terms-mode','exit-mode','objective-mode','term-count-1','term-count-2','term-count-3','term-count-4','term-count-many','exit-count-1','exit-count-2','exit-count-3','exit-count-4','exit-count-many','objective-long','objective-xlong');
       if(item.id==='terms'){
+        const tc=C.keyTerms.length;
+        heroCopy.classList.add('terms-mode',tc<=4?`term-count-${tc}`:'term-count-many');
         heroCopy.innerHTML=`<span class="callout">${esc(item.callout)}</span><h1 class="terms-title">${item.titleHtml}</h1><div class="term-grid">${C.keyTerms.map((t,i)=>`<article class="term-tile"><span class="term-number">${String(i+1).padStart(2,'0')}</span><div><h3>${esc(t.word)}</h3><p>${esc(t.definition)}</p></div></article>`).join('')}</div>`;
       }else if(item.id==='exit'){
+        const ec=C.exitQuestions.length;
+        heroCopy.classList.add('exit-mode',ec<=4?`exit-count-${ec}`:'exit-count-many');
         heroCopy.innerHTML=`<span class="callout">EXIT TICKET</span><h1 class="exit-title">${item.titleHtml}</h1><div class="exit-grid">${C.exitQuestions.map((q,i)=>`<article class="exit-tile"><span class="exit-number">${i+1}</span><p>${esc(q)}</p></article>`).join('')}</div>`;
+      }else if(item.id==='objective'){
+        const objectiveText=String(item.description||'');
+        heroCopy.classList.add('objective-mode',objectiveText.length>430?'objective-xlong':objectiveText.length>230?'objective-long':'');
+        heroCopy.innerHTML=`<span class="callout">${esc(item.callout)}</span><h1 class="${titleClass(item.title)}">${item.titleHtml}</h1><div class="meta">${item.meta.filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('')}</div><p class="synopsis">${esc(item.description)}</p>`;
       }else{
         heroCopy.innerHTML=`<span class="callout">${esc(item.callout)}</span><h1 class="${titleClass(item.title)}">${item.titleHtml}</h1><div class="meta">${item.meta.filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('')}</div><p class="synopsis">${esc(item.description)}</p><div class="context-note">${esc(item.context||'')}</div>`;
       }
@@ -111,8 +132,15 @@
   }
 
   function centerActive(){
-    const active=rail.querySelector('.card.active'); if(!active)return;
-    active.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+    const cards=[...rail.querySelectorAll('.card')];
+    const active=cards[index]; if(!active)return;
+    const gap=parseFloat(getComputedStyle(rail).gap||0);
+    const maxScroll=Math.max(0,rail.scrollWidth-rail.clientWidth);
+    let target=active.offsetLeft-(rail.clientWidth-active.offsetWidth)/2;
+    if(index===0) target=0;
+    if(index===cards.length-1) target=maxScroll;
+    target=Math.max(0,Math.min(target,maxScroll));
+    rail.scrollTo({left:target,behavior:'smooth'});
   }
   function show(n,user=false){
     if(!visible.length)return;
@@ -121,7 +149,8 @@
     renderHero(item);renderRail();requestAnimationFrame(()=>requestAnimationFrame(centerActive));
     clearTimeout(timer); if(!paused)timer=setTimeout(()=>show(index+1),seconds*1000);
     document.getElementById('briefTitle').textContent=item.tag;
-    document.getElementById('briefText').textContent=item.description||item.context||'Check today’s updates.';
+    const briefSource=String(item.description||item.context||'Check today’s updates.');
+    document.getElementById('briefText').textContent=briefSource.length>88?briefSource.slice(0,85).trim()+'…':briefSource;
   }
   function filter(group,btn){
     document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');

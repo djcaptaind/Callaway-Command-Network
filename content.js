@@ -23,6 +23,7 @@ window.CCN_STREAMING_DEFAULTS = {
     lessonLabel: "Today’s Lesson",
     objectiveLabel: "Lesson Objective",
     objectiveTitle: "Know the Standard",
+    objectiveCardTitle: "Lesson Objective",
     termsLabel: "Key Terms",
     termsTitle: "Words to Know",
     exitLabel: "Exit Questions",
@@ -34,6 +35,7 @@ window.CCN_STREAMING_DEFAULTS = {
   },
   lesson: {
     title: "The Supervising Leader",
+    cardTitle: "",
     subtitle: "Today's Lesson",
     hook: "Leaders build trust, communicate standards, and hold the team accountable.",
     let: "LET 3 and 4",

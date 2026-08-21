@@ -1,17 +1,17 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CCN Content Studio — v18 Beyond</title><link rel="stylesheet" href="editor.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CCN Content Studio — v18.4 Readable Lineup</title><link rel="stylesheet" href="editor.css"></head>
 <body>
 <header><img src="../docs/assets/ui/callaway-chargers-logo.png" alt="Callaway Chargers JROTC"><nav><a href="../docs/index.html">Open Local TV Preview</a><button id="reset" type="button">Reset Defaults</button></nav></header>
 <main>
-  <section class="intro"><span>CONTENT STUDIO — V18 BEYOND CONTROL CENTER</span><h1>Control what appears today</h1><p>Edit once, publish once. V18 keeps every V17 editing feature and adds the complete Beyond Mode TV display. Edit once, preview locally, then publish shared-content.json so the classroom TV and parent page receive the same update.</p></section>
+  <section class="intro"><span>CONTENT STUDIO — V18.4 READABLE LINEUP CONTROL</span><h1>Control what appears today</h1><p>Edit once, publish once. V18 keeps every V17 editing feature and adds the complete Beyond Mode TV display. Edit once, preview locally, then publish shared-content.json so the classroom TV and parent page receive the same update.</p></section>
   <form id="editorForm">
     <fieldset>
       <legend>Screen Titles & Visibility</legend>
       <label>Lineup heading<input name="settings.lineupTitle"></label>
       <div class="screen-controls">
         <div class="screen-control"><label class="switch-row"><input type="checkbox" name="display.lesson"> Show Today’s Lesson</label><label>Section label<input name="titles.lessonLabel"></label></div>
-        <div class="screen-control"><label class="switch-row"><input type="checkbox" name="display.objective"> Show Objective</label><label>Section label<input name="titles.objectiveLabel"></label><label>Main title<input name="titles.objectiveTitle"></label></div>
+        <div class="screen-control"><label class="switch-row"><input type="checkbox" name="display.objective"> Show Objective</label><label>Section label<input name="titles.objectiveLabel"></label><label>Main title<input name="titles.objectiveTitle"></label><label>Short lineup-card title<input name="titles.objectiveCardTitle" placeholder="e.g. Leadership & Self-Control"><small>This changes only the small lineup card, not the large Objective screen.</small></label></div>
         <div class="screen-control"><label class="switch-row"><input type="checkbox" name="display.terms"> Show Key Terms</label><label>Section label<input name="titles.termsLabel"></label><label>Main title<input name="titles.termsTitle"></label></div>
         <div class="screen-control"><label class="switch-row"><input type="checkbox" name="display.exit"> Show Exit Questions</label><label>Section label<input name="titles.exitLabel"></label><label>Main title<input name="titles.exitTitle"></label></div>
         <div class="screen-control"><label class="switch-row"><input type="checkbox" name="display.event"> Show Upcoming Event</label><label>Section label<input name="titles.eventLabel"></label></div>
@@ -23,6 +23,7 @@
 
     <fieldset><legend>Today’s Lesson</legend>
       <label>Lesson title<input name="lesson.title"></label>
+      <label>Short lineup-card title <input name="lesson.cardTitle" placeholder="Optional — e.g. Disrespect & Self-Control"><small>Keep this short for the TV card. Leave blank and CCN will create a readable short title automatically.</small></label>
       <label>Lesson summary<textarea name="lesson.hook"></textarea></label>
       <div class="row"><label>LET<input name="lesson.let"></label><label>Lesson<input name="lesson.lesson"></label><label>Duration<input name="lesson.duration"></label></div><input type="hidden" name="lesson.period">
       <label>Objective<textarea name="lesson.objective"></textarea></label>
