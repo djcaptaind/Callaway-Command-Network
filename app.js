@@ -16,21 +16,42 @@
       const res = await fetch(url, {cache:'no-store'});
       if (!res.ok) throw new Error('shared content unavailable');
       return await res.json();
-    } catch { return null; }
+    } catch (err) {
+      return null;
+    }
   };
-
   const shared = await loadShared();
   let local = null;
-  try { local = JSON.parse(localStorage.getItem('ccnStreamingContent') || localStorage.getItem('ccnContent') || 'null'); } catch {}
+  try { local = JSON.parse(localStorage.getItem('ccnStreamingContent') || localStorage.getItem('ccnContent') || 'null'); } catch { local = null; }
   const C = merge(merge(clone(D), shared || {}), local || {});
+  const escapeHtml = (value='') => String(value).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  const accentLast = value => {
+    const text = escapeHtml(value || '');
+    return text.replace(/\s+(\S+)$/, ' <span class="accent">$1</span>');
+  };
+  const formatDate = value => {
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? 'DATE TBD' : d.toLocaleDateString([], {month:'short',day:'numeric',year:'numeric'}).toUpperCase();
+  };
+  const daysUntil = value => {
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? 0 : Math.max(0, Math.ceil((d - new Date())/86400000));
+  };
 
-  const esc = (v='') => String(v).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
-  const accentLast = value => esc(value||'').replace(/\s+(\S+)$/, ' <span class="accent">$1</span>');
-  const titleClass = value => { const n=String(value||'').trim().length; return n>88?'title-xxlong':n>64?'title-xlong':n>44?'title-long':n>28?'title-medium':'title-short'; };
-  const cardTitleClass = value => { const n=String(value||'').trim().length; return n>60?'card-title-xlong':n>38?'card-title-long':''; };
-  const toDate = value => { const d=new Date(value); return Number.isNaN(d.getTime())?null:d; };
-  const daysUntil = value => { const d=toDate(value); return d?Math.max(0,Math.ceil((d-new Date())/86400000)):0; };
-  const formatDate = value => { const d=toDate(value); return d?d.toLocaleDateString([], {weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase():'DATE TBD'; };
+  const titleClass = value => {
+    const n = String(value || '').trim().length;
+    if (n > 88) return 'title-xxlong';
+    if (n > 64) return 'title-xlong';
+    if (n > 44) return 'title-long';
+    if (n > 28) return 'title-medium';
+    return 'title-short';
+  };
+  const cardTitleClass = value => {
+    const n = String(value || '').trim().length;
+    if (n > 60) return 'card-title-xlong';
+    if (n > 38) return 'card-title-long';
+    return '';
+  };
 
   const announcementHeroes = [
     ['assets/photos/hero-uniform.jpg','assets/photos/card-uniform.jpg'],
@@ -38,110 +59,229 @@
     ['assets/photos/hero-drill.jpg','assets/photos/card-drill.jpg']
   ];
 
-  const items=[];
-  if(C.display?.lesson!==false) items.push({id:'lesson',group:'lesson',tag:C.titles?.lessonLabel||"TODAY'S LESSON",callout:'NOW PLAYING',title:C.lesson?.title||"Today's Lesson",titleHtml:accentLast(C.lesson?.title||"Today's Lesson"),description:C.lesson?.hook||'',meta:[C.lesson?.let,C.lesson?.lesson,C.lesson?.duration],context:'BE THE BEST • COMPETE • LEAD',hero:'assets/photos/hero-lesson.jpg',card:'assets/photos/card-lesson-clean.jpg',badge:'FEATURED'});
-  if(C.display?.objective!==false) items.push({id:'objective',group:'learn',tag:C.titles?.objectiveLabel||'LESSON OBJECTIVE',callout:"TODAY'S FOCUS",title:C.titles?.objectiveTitle||'KNOW THE STANDARD',titleHtml:accentLast(C.titles?.objectiveTitle||'KNOW THE STANDARD'),description:C.lesson?.objective||'',meta:['Objective',C.lesson?.let],context:'LOCK IN. KNOW THE STANDARD.',hero:'assets/photos/hero-objective.jpg',card:'assets/photos/card-objective.jpg',badge:'LEARN'});
-  if(C.display?.terms!==false && C.keyTerms?.length) items.push({id:'terms',group:'learn',tag:C.titles?.termsLabel||'KEY TERMS',callout:'WORDS TO KNOW',title:C.titles?.termsTitle||'WORDS TO KNOW',titleHtml:accentLast(C.titles?.termsTitle||'WORDS TO KNOW'),description:C.keyTerms.map(x=>x.word).join(' • '),meta:[`${C.keyTerms.length} Terms`],context:'BUILD YOUR VOCABULARY.',hero:'assets/photos/hero-terms.jpg',card:'assets/photos/card-terms.jpg',badge:`${C.keyTerms.length} TERMS`});
-  if(C.display?.exit!==false && C.exitQuestions?.length) items.push({id:'exit',group:'learn',tag:C.titles?.exitLabel||'EXIT QUESTIONS',callout:'EXIT TICKET',title:C.titles?.exitTitle||'SHOW WHAT YOU KNOW',titleHtml:accentLast(C.titles?.exitTitle||'SHOW WHAT YOU KNOW'),description:C.exitQuestions[0],meta:[`${C.exitQuestions.length} Questions`],context:'FINISH STRONG.',hero:'assets/photos/hero-exit.jpg',card:'assets/photos/card-exit.jpg',badge:'EXIT'});
+  const items = [];
 
-  if(C.display?.event!==false && C.operation?.title){
-    const photo=C.operation.showPhoto===false?'assets/ui/event-no-photo.svg':(C.operation.photo||'assets/photos/hero-adventure.jpg');
-    items.push({id:'operation',group:'events',tag:C.titles?.eventLabel||'UPCOMING EVENT',callout:'UPCOMING EVENT',title:C.operation.title,titleHtml:accentLast(C.operation.title),description:C.operation.detail||'',meta:[formatDate(C.operation.date),C.operation.location],context:'STAY READY.',hero:photo,card:photo,badge:`${daysUntil(C.operation.date)} DAYS`});
-  }
+  if (C.display.lesson) items.push({
+    id:'lesson', group:'lesson', tag:C.titles.lessonLabel, callout:'NOW PLAYING', title:C.lesson.title,
+    titleHtml:accentLast(C.lesson.title), description:C.lesson.hook,
+    meta:[C.lesson.let,C.lesson.lesson,C.lesson.period,C.lesson.duration],
+    context:'Continue learning where today’s class begins.', hero:'assets/photos/hero-lesson.jpg', card:'assets/photos/card-lesson-clean.jpg', badge:'FEATURED'
+  });
 
-  if(C.display?.announcements!==false && Array.isArray(C.announcements)){
-    C.announcements.filter(a=>a&&(a.headline||a.detail)).forEach((a,i)=>{
-      const art=announcementHeroes[i%announcementHeroes.length];
-      items.push({id:`announcement-${i}`,group:'events',tag:C.titles?.announcementLabel||'ANNOUNCEMENT',callout:a.status||'ANNOUNCEMENT',title:a.headline||'Announcement',titleHtml:accentLast(a.headline||'Announcement'),description:a.detail||'',meta:[],context:'STAY INFORMED. STAY READY.',hero:art[0],card:art[1],badge:a.status||'UPDATE'});
+  if (C.display.objective) items.push({
+    id:'objective', group:'learn', tag:C.titles.objectiveLabel, callout:'TODAY’S FOCUS', title:C.titles.objectiveTitle,
+    titleHtml:accentLast(C.titles.objectiveTitle), description:C.lesson.objective,
+    meta:['Objective',C.lesson.let,C.lesson.period], context:'Clear targets make successful teams.',
+    hero:'assets/photos/hero-objective.jpg', card:'assets/photos/card-objective.jpg', badge:'LEARN'
+  });
+
+  if (C.display.terms && C.keyTerms?.length) items.push({
+    id:'terms', group:'learn', tag:C.titles.termsLabel, callout:C.titles.termsTitle, title:C.titles.termsTitle,
+    titleHtml:accentLast(C.titles.termsTitle), description:C.keyTerms.map(x=>x.word).join(' • '),
+    meta:[`${C.keyTerms.length} Terms`,'Vocabulary'], context:'Review each word and definition.',
+    hero:'assets/photos/hero-terms.jpg', card:'assets/photos/card-terms.jpg', badge:`${C.keyTerms.length} TERMS`
+  });
+
+  if (C.display.exit && C.exitQuestions?.length) items.push({
+    id:'exit', group:'learn', tag:C.titles.exitLabel, callout:'EXIT TICKET', title:C.titles.exitTitle,
+    titleHtml:accentLast(C.titles.exitTitle), description:C.exitQuestions[0],
+    meta:[`${C.exitQuestions.length} Questions`,'Before the Bell'], context:'Answer each question before leaving class.',
+    hero:'assets/photos/hero-exit.jpg', card:'assets/photos/card-exit.jpg', badge:'EXIT'
+  });
+
+  if (C.display.event && C.operation?.title) {
+    const eventPhotoVisible = C.operation.showPhoto !== false;
+    const eventPhoto = C.operation.photo || 'assets/photos/hero-adventure.jpg';
+    items.push({
+      id:'operation', group:'events', tag:C.titles.eventLabel, callout:'COMING SOON', title:C.operation.title,
+      titleHtml:accentLast(C.operation.title), description:`${daysUntil(C.operation.date)} days remaining. ${C.operation.detail}`,
+      meta:[formatDate(C.operation.date),C.operation.location,'All Cadets'], context:'Check details and be prepared.',
+      hero:eventPhotoVisible ? eventPhoto : 'assets/ui/event-no-photo.svg',
+      card:eventPhotoVisible ? eventPhoto : 'assets/ui/event-no-photo.svg',
+      badge:`${daysUntil(C.operation.date)} DAYS`
     });
   }
 
-  if(C.display?.spotlights!==false && Array.isArray(C.spotlights)){
-    C.spotlights.filter(s=>s&&s.enabled!==false&&s.name).forEach((s,i)=>{
-      const t=(s.type||'').toLowerCase(); const badge=t.includes('year')?'YEAR':t.includes('month')?'MONTH':'WEEK';
-      items.push({id:`spotlight-${i}`,group:'spotlight',tag:s.type||'CADET SPOTLIGHT',callout:'RECOGNITION',title:s.name,titleHtml:(()=>{const p=esc(s.name).split(/\s+/);const last=p.pop()||'';return `${p.join(' ')} <span class="accent">${last}</span>`})(),description:s.detail||'',meta:s.badges||[],context:s.quote?`“${s.quote}”`:'',hero:'assets/photos/hero-spotlight-clean.jpg',card:'assets/photos/card-spotlight-clean.jpg',badge,portrait:s.portrait,showPhoto:s.showPhoto!==false});
+  if (C.display.announcements && Array.isArray(C.announcements)) {
+    C.announcements.filter(a => a && (a.headline || a.detail || a.status)).forEach((a,i) => {
+      const art = announcementHeroes[i % announcementHeroes.length];
+      items.push({
+        id:`announcement-${i}`, group:'events', tag:C.titles.announcementLabel, callout:a.status || 'ANNOUNCEMENT',
+        title:a.headline || 'Announcement', titleHtml:accentLast(a.headline || 'Announcement'), description:a.detail || '',
+        meta:[], context:'', hero:art[0], card:art[1], badge:a.status || 'UPDATE'
+      });
     });
   }
 
-  if(C.display?.service!==false) items.push({id:'service',group:'spotlight',tag:C.titles?.serviceLabel||'COMMUNITY IMPACT',callout:'CALLAWAY PRIDE',title:C.titles?.serviceTitle||'SERVICE IN ACTION',titleHtml:accentLast(C.titles?.serviceTitle||'SERVICE IN ACTION'),description:'Leadership is measured by the positive impact we create for others.',meta:['Community','Teamwork','Service'],context:'MAKE A DIFFERENCE.',hero:'assets/photos/hero-service.jpg',card:'assets/photos/card-service.jpg',badge:'IMPACT'});
-
-  const app=document.getElementById('app'), heroBg=document.getElementById('heroBackground'), heroCopy=document.getElementById('heroCopy'), rail=document.getElementById('rail'), rowTitle=document.getElementById('rowTitle'), featureIndex=document.getElementById('featureIndex'), featureTotal=document.getElementById('featureTotal'), pausedBadge=document.getElementById('pausedBadge');
-  let visible=[...items],index=0,timer=null,paused=!(C.settings?.autoplay!==false),seconds=Math.max(6,Number(C.settings?.secondsPerFeature||11));
-  app.style.setProperty('--feature-seconds',`${seconds}s`);
-  rowTitle.textContent=C.settings?.lineupTitle||"Today's Lineup";
-  featureTotal.textContent=String(visible.length).padStart(2,'0');
-
-  const eventTitle=document.getElementById('eventTitle'),eventMeta=document.getElementById('eventMeta'),eventBg=document.getElementById('eventBackground'),countdown=document.getElementById('countdown');
-  function renderEvent(){
-    const op=C.operation||{}; const photo=op.showPhoto===false?'assets/ui/event-no-photo.svg':(op.photo||'assets/photos/hero-adventure.jpg');
-    eventBg.style.backgroundImage=`url('${photo}')`; eventTitle.textContent=op.title||'Upcoming Event';
-    eventMeta.innerHTML=`<div>▦ ${esc(formatDate(op.date))}</div><div>● ${esc(op.location||'Location TBD')}</div>`;
-    updateCountdown();
+  function makeSpotlightItem(spotlightData, spotIndex) {
+    return {
+      id:`spotlight-${spotIndex}`, group:'spotlight', tag:spotlightData.type || 'Cadet Spotlight', callout:'CCN ORIGINAL', title:spotlightData.name,
+      titleHtml:(()=>{const parts=escapeHtml(spotlightData.name).trim().split(/\s+/); const last=parts.pop()||''; return `<span class="name-main">${parts.join(' ')}</span><span class="accent name-last">${last}</span>`;})(),
+      description:spotlightData.detail, meta:spotlightData.badges || [], context:spotlightData.quote ? `“${spotlightData.quote}”` : '',
+      hero:'assets/photos/hero-spotlight-clean.jpg', card:'assets/photos/card-spotlight-clean.jpg', badge:(()=>{const t=(spotlightData.type||'').toLowerCase(); if(t.includes('year')) return 'YEAR'; if(t.includes('month')) return 'MONTH'; return 'WEEK';})(),
+      portrait:spotlightData.portrait, showPhoto:spotlightData.showPhoto !== false
+    };
   }
-  function updateCountdown(){
-    const d=toDate(C.operation?.date); let ms=d?Math.max(0,d-new Date()):0;
-    const days=Math.floor(ms/86400000);ms%=86400000;const hrs=Math.floor(ms/3600000);ms%=3600000;const mins=Math.floor(ms/60000);const secs=Math.floor((ms%60000)/1000);
-    countdown.innerHTML=[[days,'DAYS'],[hrs,'HRS'],[mins,'MINS'],[secs,'SECS']].map(([n,l])=>`<div class="count-box"><b>${String(n).padStart(2,'0')}</b><small>${l}</small></div>`).join('');
+
+  if (C.display.spotlights && Array.isArray(C.spotlights)) {
+    C.spotlights.filter(s=>s && s.enabled!==false && s.name).forEach((s,i)=>items.push(makeSpotlightItem(s,i)));
   }
-  renderEvent(); setInterval(updateCountdown,1000);
+
+  if (C.display.service) items.push({
+    id:'service', group:'spotlight', tag:C.titles.serviceLabel, callout:'CALLAWAY PRIDE', title:C.titles.serviceTitle,
+    titleHtml:accentLast(C.titles.serviceTitle), description:'Leadership is measured by the positive impact we create for others.',
+    meta:['Community','Teamwork','Service'], context:'Recognize cadets who make a difference.',
+    hero:'assets/photos/hero-service.jpg', card:'assets/photos/card-service.jpg', badge:'IMPACT'
+  });
+
+  let visibleItems = [...items];
+  let index = 0;
+  let timer = null;
+  let paused = !C.settings.autoplay;
+  const seconds = Math.max(6, Number(C.settings.secondsPerFeature || 11));
+  const app = document.getElementById('app');
+  const heroBg = document.getElementById('heroBackground');
+  const heroCopy = document.getElementById('heroCopy');
+  const heroPanel = document.getElementById('heroArtPanel');
+  const rail = document.getElementById('rail');
+  const pausedBadge = document.getElementById('pausedBadge');
+  const rowTitle = document.getElementById('rowTitle');
+  const featureIndex = document.getElementById('featureIndex');
+  const featureTotal = document.getElementById('featureTotal');
+  rowTitle.textContent = C.settings.lineupTitle || 'Today’s Lineup';
+  app.style.setProperty('--feature-seconds', `${seconds}s`);
 
   function renderRail(){
-    rail.innerHTML=visible.map((item,i)=>`<article class="card ${i===index?'active':''}" data-index="${i}" role="option" aria-selected="${i===index}">
-      <img src="${esc(item.card)}" alt="">
-      <span class="card-badge">${esc(item.badge||'')}</span>
-      <div class="card-copy"><span class="tag">${esc(item.tag)}</span><h3 class="${cardTitleClass(item.title)}">${esc(item.title)}</h3></div>
-      <span class="card-progress"></span>
-    </article>`).join('');
-    rail.querySelectorAll('.card').forEach(c=>c.addEventListener('click',()=>show(Number(c.dataset.index),true)));
+    rail.innerHTML = visibleItems.map((item,i)=>`
+      <article class="card ${i===index?'active':''}" role="option" aria-selected="${i===index}" data-index="${i}" tabindex="${i===index?'0':'-1'}">
+        <img src="${escapeHtml(item.card)}" alt="" />
+        <span class="card-badge">${escapeHtml(item.badge || '')}</span>
+        <div class="card-copy"><span class="tag">${escapeHtml(item.tag)}</span><h3 class="${cardTitleClass(item.title)}">${escapeHtml(item.title)}</h3></div>
+        <span class="card-progress" aria-hidden="true"></span>
+      </article>`).join('');
+    rail.querySelectorAll('.card').forEach(card => card.addEventListener('click',()=>show(Number(card.dataset.index),true)));
+  }
+
+  function centerActive(behavior='smooth'){
+    const cards=[...rail.querySelectorAll('.card')];
+    const active=cards[index];
+    if(!active || !cards.length) return;
+    const styles=getComputedStyle(rail);
+    const gap=parseFloat(styles.columnGap || styles.gap || 0);
+    const step=active.offsetWidth+gap;
+    const visible=Math.max(1,Math.floor((rail.clientWidth+gap)/step));
+    const maxStart=Math.max(0,cards.length-visible);
+    const desiredStart=Math.max(0,Math.min(index-Math.floor(visible/2),maxStart));
+    const target=cards[desiredStart]?.offsetLeft || 0;
+    rail.scrollTo({left:target,behavior});
   }
 
   function renderHero(item){
-    heroCopy.classList.add('fade');
+    heroCopy.classList.add('out');
     setTimeout(()=>{
-      heroBg.classList.remove('animate'); heroBg.style.backgroundImage=`url('${item.hero}')`; requestAnimationFrame(()=>heroBg.classList.add('animate'));
-      if(item.id==='terms'){
-        heroCopy.innerHTML=`<span class="callout">${esc(item.callout)}</span><h1 class="terms-title">${item.titleHtml}</h1><div class="term-grid">${C.keyTerms.map((t,i)=>`<article class="term-tile"><span class="term-number">${String(i+1).padStart(2,'0')}</span><div><h3>${esc(t.word)}</h3><p>${esc(t.definition)}</p></div></article>`).join('')}</div>`;
-      }else if(item.id==='exit'){
-        heroCopy.innerHTML=`<span class="callout">EXIT TICKET</span><h1 class="exit-title">${item.titleHtml}</h1><div class="exit-grid">${C.exitQuestions.map((q,i)=>`<article class="exit-tile"><span class="exit-number">${i+1}</span><p>${esc(q)}</p></article>`).join('')}</div>`;
-      }else{
-        heroCopy.innerHTML=`<span class="callout">${esc(item.callout)}</span><h1 class="${titleClass(item.title)}">${item.titleHtml}</h1><div class="meta">${item.meta.filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('')}</div><p class="synopsis">${esc(item.description)}</p><div class="context-note">${esc(item.context||'')}</div>`;
+      heroBg.classList.remove('animate');
+      heroBg.style.backgroundImage = `url('${item.hero}')`;
+      requestAnimationFrame(()=>heroBg.classList.add('animate'));
+
+      if(item.id === 'terms'){
+        heroCopy.innerHTML = `
+          <span class="callout">${escapeHtml(item.callout)}</span>
+          <h1 class="terms-title">${item.titleHtml}</h1>
+          <div class="term-grid">
+            ${C.keyTerms.map((term, termIndex)=>`
+              <article class="term-tile">
+                <span class="term-number">${String(termIndex + 1).padStart(2,'0')}</span>
+                <div><h3>${escapeHtml(term.word)}</h3><p>${escapeHtml(term.definition)}</p></div>
+              </article>`).join('')}
+          </div>`;
+      } else if(item.id === 'exit') {
+        heroCopy.innerHTML = `
+          <span class="callout">EXIT TICKET</span>
+          <h1 class="exit-title">${item.titleHtml}</h1>
+          <div class="exit-grid exit-count-${Math.min(C.exitQuestions.length,6)}">
+            ${C.exitQuestions.map((q, qIndex)=>`
+              <article class="exit-tile">
+                <span class="exit-number">${qIndex + 1}</span>
+                <p>${escapeHtml(q)}</p>
+              </article>`).join('')}
+          </div>`;
+      } else {
+        heroCopy.innerHTML = `
+          <span class="callout">${escapeHtml(item.callout)}</span>
+          <h1 class="${titleClass(item.title)}">${item.titleHtml}</h1>
+          <div class="meta">${item.meta.filter(Boolean).map(x=>`<span>${escapeHtml(x)}</span>`).join('')}</div>
+          <p class="synopsis">${escapeHtml(item.description)}</p>
+          <div class="hero-actions">
+            <button class="hero-button" type="button">▶ View Focus</button>
+            <button class="hero-button secondary" type="button">ⓘ ${escapeHtml(item.tag)}</button>
+          </div>
+          <div class="context-note">${escapeHtml(item.context || '')}</div>`;
       }
-      heroCopy.classList.remove('fade');
-    },180);
+
+      heroCopy.classList.remove('out');
+      heroPanel.className = 'hero-art-panel';
+      heroPanel.classList.remove('visible');
+      heroPanel.innerHTML='';
+      if(item.id.startsWith('spotlight-') && item.showPhoto && item.portrait){
+        heroPanel.classList.add('portrait-panel');
+        heroPanel.innerHTML = `<img src="${escapeHtml(item.portrait)}" alt="Cadet spotlight portrait"><div class="portrait-caption"><strong>${escapeHtml(item.tag)}</strong><span>${escapeHtml(item.title)}</span></div>`;
+        heroPanel.classList.add('visible');
+      }
+    },200);
   }
 
-  function centerActive(){
-    const active=rail.querySelector('.card.active'); if(!active)return;
-    active.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+  function show(n, userAction=false){
+    if(!visibleItems.length){
+      heroCopy.innerHTML='<span class="callout">CCN</span><h1 class="title-medium">NO CONTENT <span class="accent">SELECTED</span></h1><p class="synopsis">Open the Content Studio and turn on at least one section.</p>';
+      rail.innerHTML='';
+      return;
+    }
+    index = (n + visibleItems.length) % visibleItems.length;
+    const item = visibleItems[index];
+    app.dataset.item = item.id.startsWith('announcement-') ? 'announcement' : (item.id.startsWith('spotlight-') ? 'spotlight' : item.id);
+    if(featureIndex) featureIndex.textContent=String(index+1).padStart(2,'0');
+    if(featureTotal) featureTotal.textContent=String(visibleItems.length).padStart(2,'0');
+    app.classList.remove('feature-tick');
+    void app.offsetWidth;
+    app.classList.add('feature-tick');
+    renderHero(item);
+    renderRail();
+    requestAnimationFrame(()=>requestAnimationFrame(()=>centerActive(userAction?'smooth':'auto')));
+    document.getElementById('footerMessage').textContent = `${item.tag} • ${item.title}`;
+    clearTimeout(timer);
+    if(!paused) timer=setTimeout(()=>show(index+1),seconds*1000);
   }
-  function show(n,user=false){
-    if(!visible.length)return;
-    index=(n+visible.length)%visible.length;const item=visible[index];
-    featureIndex.textContent=String(index+1).padStart(2,'0');featureTotal.textContent=String(visible.length).padStart(2,'0');
-    renderHero(item);renderRail();requestAnimationFrame(()=>requestAnimationFrame(centerActive));
-    clearTimeout(timer); if(!paused)timer=setTimeout(()=>show(index+1),seconds*1000);
-    document.getElementById('briefTitle').textContent=item.tag;
-    document.getElementById('briefText').textContent=item.description||item.context||'Check today’s updates.';
+
+  function togglePause(){ paused=!paused; pausedBadge.hidden=!paused; show(index); }
+  function full(){ if(!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.(); }
+  function setFilter(group, button){
+    document.querySelectorAll('.nav-pill').forEach(x=>x.classList.remove('active'));
+    button.classList.add('active');
+    visibleItems = group==='all' ? [...items] : items.filter(x=>x.group===group);
+    rowTitle.textContent = group==='all' ? (C.settings.lineupTitle || 'Today’s Lineup') : button.textContent;
+    index=0; show(0,true);
   }
-  function filter(group,btn){
-    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
-    visible=group==='all'?[...items]:items.filter(x=>x.group===group);rowTitle.textContent=group==='all'?(C.settings?.lineupTitle||"Today's Lineup"):btn.textContent.trim();index=0;show(0,true);
-  }
-  document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>filter(btn.dataset.filter,btn)));
 
-  const tickerItems=(C.announcements||[]).filter(a=>a?.headline).map(a=>a.headline);
-  tickerItems.push('Be On Time','Participate Every Day','Wear It Right','Represent Callaway With Pride');
-  document.getElementById('tickerText').innerHTML=(tickerItems.concat(tickerItems)).map(x=>`<span>${esc(x)}</span><b>●</b>`).join('');
-
-  function tick(){const now=new Date();document.getElementById('clock').textContent=now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});document.getElementById('date').textContent=now.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase();}
-  tick();setInterval(tick,1000);
-
-  document.addEventListener('keydown',e=>{
-    if(e.key==='ArrowRight')show(index+1,true); if(e.key==='ArrowLeft')show(index-1,true);
-    if(e.code==='Space'){e.preventDefault();paused=!paused;pausedBadge.hidden=!paused;if(!paused)show(index);}
-    if(e.key.toLowerCase()==='f'){if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.();}
-    if(e.key.toLowerCase()==='e')location.href='editor.html';
+  document.querySelectorAll('.nav-pill').forEach(btn=>{
+    const group=btn.dataset.filter;
+    if(group!=='all' && !items.some(x=>x.group===group)) btn.hidden=true;
+    btn.addEventListener('click',()=>setFilter(group,btn));
   });
-  document.addEventListener('dblclick',()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();});
-  renderRail();show(0);
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight') show(index+1,true);
+    if(e.key==='ArrowLeft') show(index-1,true);
+    if(e.code==='Space'){e.preventDefault();togglePause();}
+    if(e.key.toLowerCase()==='f') full();
+    if(e.key.toLowerCase()==='e') location.href='editor.html';
+  });
+  document.addEventListener('dblclick',full);
+  window.addEventListener('resize',()=>centerActive('auto'));
+
+  function tick(){
+    const now=new Date();
+    document.getElementById('clock').textContent=now.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+    document.getElementById('date').textContent=now.toLocaleDateString([], {weekday:'short',month:'short',day:'numeric'}).toUpperCase();
+  }
+  tick(); setInterval(tick,1000);
+  renderRail(); show(0);
 })();
