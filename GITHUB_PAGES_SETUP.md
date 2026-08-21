@@ -1,28 +1,17 @@
-# CCN V17 — GitHub Pages Setup
+# CCN V18 Beyond — GitHub Pages
 
-## One-time setup
-1. Create or open your GitHub repository for Callaway Command Network.
-2. Upload this project, keeping the `docs` folder intact.
-3. In GitHub, open **Settings → Pages**.
-4. Under **Build and deployment**, choose **Deploy from a branch**.
-5. Choose branch **main** and folder **/docs**.
-6. Save.
+After local testing:
 
-Your public links will use this pattern:
+1. Open your `Callaway-Command-Network` repository.
+2. Upload/replace the **docs** folder and **instructor** folder from this V18 package.
+3. Also replace the root README and launcher files if desired.
+4. In GitHub: **Settings → Pages**.
+5. Publish from **main** and **/docs**.
 
-- TV: `https://YOUR-USERNAME.github.io/REPOSITORY-NAME/`
-- Parents: `https://YOUR-USERNAME.github.io/REPOSITORY-NAME/parent.html`
+Public TV link:
+`https://djcaptaind.github.io/Callaway-Command-Network/`
 
-## Every time you update CCN
-1. Open `START_INSTRUCTOR_EDITOR.bat`.
-2. Make all changes.
-3. Click **Download Shared Update**.
-4. GitHub will receive a file named `shared-content.json`.
-5. In your repository, open the `docs` folder.
-6. Replace the existing `shared-content.json` with the newly downloaded file and commit the change.
-7. The TV and parent links will use the same published information after GitHub Pages refreshes.
+Parent link:
+`https://djcaptaind.github.io/Callaway-Command-Network/parent.html`
 
-## Important
-- Do not publish the `instructor` folder as your Pages source. Publish `/docs` only.
-- The instructor editor contains no password or token and does not directly write to GitHub.
-- Uploaded event and spotlight photos are embedded in `shared-content.json`, so replacing that one file publishes the pictures too.
+To publish content changes from the instructor editor, click **Download Shared Update**, then replace `docs/shared-content.json` in GitHub.

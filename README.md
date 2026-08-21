@@ -1,26 +1,27 @@
-# Callaway Command Network — V17 Beyond + Shared
+CALLAWAY COMMAND NETWORK — V18 BEYOND COMPLETE
 
-V17 keeps the approved streaming-home direction and the shared Parent/TV publishing system from V16.
+THIS IS THE COMPLETE V18 TEST BUILD.
 
-## Public GitHub Pages files
-- `docs/index.html` — classroom TV / streaming display
-- `docs/parent.html` — parent & family view
-- `docs/shared-content.json` — one published data file used by both public views
+WHAT IS INCLUDED
+- Beyond Mode TV display in docs/index.html
+- Matching V18 instructor Content Studio in instructor/editor.html
+- Shared TV + Parent workflow
+- Lesson, Objective, Key Terms, Exit Questions
+- Upcoming Event + event photo controls
+- Announcements
+- Cadet Spotlight Gallery: Week / Month / Year + separate photos
+- Hide/show controls
+- Parent View
+- GitHub Pages /docs deployment structure
 
-## Instructor workflow
-1. Open `START_INSTRUCTOR_EDITOR.bat`.
-2. Update the lesson, objective, key terms, exit questions, announcements, event, and cadet spotlights.
-3. Click **Download Shared Update**.
-4. Replace `docs/shared-content.json` in GitHub.
-5. The TV and parent links show the same published update.
+LOCAL TEST
+1. Double-click START_TV_LOCAL.bat for the TV screen.
+2. Double-click START_INSTRUCTOR_EDITOR.bat for the Content Studio.
+3. Update content and click Save Local Draft.
+4. Refresh the TV preview.
 
-## V17 Beyond Mode upgrades
-- Smart auto-sizing for very long main titles
-- Cinematic Callaway orange/blue lighting and motion
-- Premium CCN brand lockup and LIVE status treatment
-- Stronger selected-card glow and automatic card progress bar
-- Feature counter (01 / total)
-- Cleaner five-card streaming rail for a 55-inch TV
-- Improved long card-title handling
-- Premium vocabulary, exit-question, event, and cadet spotlight treatments
-- Shared Parent/TV system retained
+PUBLISHING
+When V18 is approved, upload the full docs and instructor folders plus the launch/setup files to GitHub. GitHub Pages should publish from main /docs.
+
+IMPORTANT
+Do not replace V17 on GitHub until you have tested this package locally.
