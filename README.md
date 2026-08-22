@@ -1,3 +1,10 @@
+CALLAWAY COMMAND NETWORK V18.9.2 — GITHUB PUBLISH FIX
+
+FIXED
+- Resolved: "collectUniversalGalleries is not defined"
+- Save Local Draft and Publish Directly to GitHub now serialize universal photo/video galleries directly.
+- V18.9.1 Recognition Center and built-in media controls remain included.
+
 CALLAWAY COMMAND NETWORK V18.9.1 — UNIVERSAL MEDIA + RECOGNITION CENTER FIX
 
 FIXED

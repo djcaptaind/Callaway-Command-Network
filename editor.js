@@ -284,7 +284,23 @@
       meta:card.querySelector('[data-custom-meta]')?.value.trim()||'',
       photo:data.customSections[i]?.photo||'assets/ui/event-no-photo.svg'
     }));
-    collectUniversalGalleries(result);
+    // V18.9.2: serialize universal media galleries directly inside collectResult.
+    result.galleries = result.galleries || {};
+    if (universalGalleriesWrap) {
+      universalGalleriesWrap.querySelectorAll('.universal-gallery-card').forEach(card=>{
+        const key=card.dataset.galleryKey;
+        const source=(data.galleries && data.galleries[key]) ? data.galleries[key] : {media:[]};
+        const media=Array.isArray(source.media)
+          ? source.media
+          : (Array.isArray(source.photos) ? source.photos.map(src=>({type:'image',src})) : []);
+        result.galleries[key]={
+          enabled:Boolean(card.querySelector('[data-gallery-enabled]')?.checked),
+          seconds:Math.max(2,Math.min(20,Number(card.querySelector('[data-gallery-seconds]')?.value||5))),
+          coverIndex:Math.max(0,Math.min(Number(source.coverIndex||0),Math.max(0,media.length-1))),
+          media:[...media]
+        };
+      });
+    }
     if (eventPhotoData) result.operation.photo = eventPhotoData;
     result.settings = result.settings || {};
     result.settings.updatedAt = new Date().toISOString();
