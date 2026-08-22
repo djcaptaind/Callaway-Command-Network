@@ -35,6 +35,18 @@
     if (saved?.display?.spotlight !== undefined || saved?.display?.spotlightMonth !== undefined || saved?.display?.spotlightWeek !== undefined) data.display.spotlights = true;
   }
   if (!Array.isArray(data.spotlights)) data.spotlights = clone(D.spotlights);
+  if (!Array.isArray(data.customSections)) data.customSections = clone(D.customSections || []);
+  if (!data.galleries || typeof data.galleries !== 'object') data.galleries = clone(D.galleries || {});
+  Object.keys(D.galleries || {}).forEach(key=>{
+    if(!data.galleries[key]) data.galleries[key]=clone(D.galleries[key]);
+    if(!Array.isArray(data.galleries[key].media)){
+      const oldPhotos=Array.isArray(data.galleries[key].photos)?data.galleries[key].photos:[];
+      data.galleries[key].media=oldPhotos.map(src=>({type:'image',src}));
+      delete data.galleries[key].photos;
+    }
+    data.galleries[key].coverIndex=Math.max(0,Math.min(Number(data.galleries[key].coverIndex||0),Math.max(0,data.galleries[key].media.length-1)));
+    data.galleries[key].seconds=Math.max(2,Math.min(20,Number(data.galleries[key].seconds||5)));
+  });
 
   const form=document.getElementById('editorForm');
   const status=document.getElementById('status');
@@ -42,6 +54,8 @@
   const questionsWrap=document.getElementById('questions');
   const updatesWrap=document.getElementById('updates');
   const spotlightsWrap=document.getElementById('spotlights');
+  const customSectionsWrap=document.getElementById('customSections');
+  const universalGalleriesWrap=document.getElementById('universalGalleries');
   const get=(obj,path)=>path.split('.').reduce((x,k)=>x?.[k],obj);
   const setPath=(obj,path,value)=>{const keys=path.split('.');const last=keys.pop();const target=keys.reduce((x,k)=>x[k]??={},obj);target[last]=value};
   const escapeHtml=s=>String(s).replace(/[&<>]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch]));
@@ -77,36 +91,155 @@
     });
   }
 
+  const recognitionTypes = [
+    "Cadet of the Week",
+    "Cadet of the Month",
+    "Cadet of the Year",
+    "Congratulations",
+    "Staff Recognition",
+    "Special Recognition",
+    "Team Recognition",
+    "Academic Achievement",
+    "Promotion",
+    "Competition Achievement",
+    "College / Scholarship Acceptance",
+    "Community Service",
+    "Birthday / Shout-Out",
+    "Alumni Spotlight",
+    "Custom"
+  ];
+
+  function recognitionLabel(s){
+    return s.type==="Custom" ? (s.customType||"Custom Recognition") : (s.type||"Special Recognition");
+  }
+
   function renderSpotlights(){
     spotlightsWrap.innerHTML='';
-    if(!data.spotlights.length) spotlightsWrap.innerHTML='<div class="empty-gallery">No spotlights yet. Click <strong>+ Add Spotlight</strong>.</div>';
+    if(!data.spotlights.length) spotlightsWrap.innerHTML='<div class="empty-gallery">No recognition items yet. Click <strong>+ Add Recognition</strong>.</div>';
     data.spotlights.forEach((s,i)=>{
+      if(!Array.isArray(s.media)) s.media=[];
+      if(s.coverIndex===undefined) s.coverIndex=0;
+      if(!s.mediaSeconds) s.mediaSeconds=5;
+      if(s.showParents===undefined) s.showParents=true;
       const card=document.createElement('div');
-      card.className='spotlight-editor-card';
-      const photoNote = s.portrait && s.portrait.startsWith('data:') ? 'Custom photo saved' : 'Default photo';
+      card.className='spotlight-editor-card recognition-editor-card';
+      const photoNote = s.portrait && s.portrait.startsWith('data:') ? 'Custom portrait saved' : 'Default portrait';
+      const typeOptions=recognitionTypes.map(t=>`<option ${s.type===t?'selected':''}>${t}</option>`).join('');
+      const mediaCount=s.media.length;
       card.innerHTML=`
-        <div class="spotlight-card-head"><div><span class="spotlight-index">SPOTLIGHT ${i+1}</span><strong>${escapeHtml(s.name || 'New Cadet')}</strong></div><div class="spotlight-card-actions"><button type="button" class="duplicate-btn">Duplicate</button><button type="button" class="remove-btn">Remove</button></div></div>
-        <div class="row">
-          <label>Spotlight type<select data-spot-type><option ${s.type==='Cadet of the Month'?'selected':''}>Cadet of the Month</option><option ${s.type==='Cadet of the Week'?'selected':''}>Cadet of the Week</option><option ${s.type==='Cadet of the Year'?'selected':''}>Cadet of the Year</option></select></label>
-          <label class="switch-row spotlight-switch"><input type="checkbox" data-spot-enabled ${s.enabled!==false?'checked':''}> Show this spotlight</label>
-          <label class="switch-row spotlight-switch"><input type="checkbox" data-spot-photo ${s.showPhoto!==false?'checked':''}> Show its photo</label>
+        <div class="spotlight-card-head">
+          <div><span class="spotlight-index">RECOGNITION ${i+1}</span><strong>${escapeHtml(s.headline || s.name || recognitionLabel(s))}</strong></div>
+          <div class="spotlight-card-actions">
+            <button type="button" class="duplicate-btn">Duplicate</button>
+            <button type="button" class="remove-btn">Remove</button>
+          </div>
         </div>
-        <label>Cadet name<input data-spot-name value="${escapeAttr(s.name||'')}"></label>
-        <label>Cadet details<input data-spot-detail value="${escapeAttr(s.detail||'')}"></label>
-        <label>Quote<textarea data-spot-quote>${escapeHtml(s.quote||'')}</textarea></label>
+
+        <div class="row">
+          <label>Recognition type<select data-spot-type>${typeOptions}</select></label>
+          <label data-custom-type-wrap style="${s.type==='Custom'?'':'display:none'}">Custom recognition type<input data-spot-customtype value="${escapeAttr(s.customType||'')}" placeholder="e.g. Congratulations to Staff"></label>
+          <label class="switch-row spotlight-switch"><input type="checkbox" data-spot-enabled ${s.enabled!==false?'checked':''}> Show this recognition</label>
+          <label class="switch-row spotlight-switch"><input type="checkbox" data-spot-parents ${s.showParents!==false?'checked':''}> Show on Parent View</label>
+        </div>
+
+        <label>Headline / title<input data-spot-headline value="${escapeAttr(s.headline||'')}" placeholder="Optional — e.g. Congratulations to Our JROTC Staff"></label>
+        <label>Name / group<input data-spot-name value="${escapeAttr(s.name||'')}" placeholder="Cadet, staff member, team, or group"></label>
+        <label>Details<input data-spot-detail value="${escapeAttr(s.detail||'')}"></label>
+        <label>Message / quote<textarea data-spot-quote>${escapeHtml(s.quote||'')}</textarea></label>
         <label>Recognition badges (comma separated)<input data-spot-badges value="${escapeAttr((s.badges||[]).join(', '))}"></label>
-        <label class="upload">Spotlight photo<input type="file" data-spot-upload accept="image/*"><small data-photo-status>${photoNote}. Uploading a new photo replaces this spotlight’s stored photo only.</small></label>`;
-      card.querySelector('.remove-btn').addEventListener('click',()=>{data.spotlights.splice(i,1);renderSpotlights();status.textContent='Spotlight removed. Save to apply.'});
-      card.querySelector('.duplicate-btn').addEventListener('click',()=>{const copy=clone(s);copy.name=copy.name?`${copy.name} Copy`:'';data.spotlights.splice(i+1,0,copy);renderSpotlights();status.textContent='Spotlight duplicated.'});
-      card.querySelector('[data-spot-upload]').addEventListener('change',async e=>{const file=e.target.files[0];if(file){s.portrait=await resizeImage(file,720,960);card.querySelector('[data-photo-status]').textContent='Custom photo ready. Save CCN Display to apply.';status.textContent=`Photo ready for Spotlight ${i+1}.`}});
+
+        <div class="row">
+          <label>Start date<input type="date" data-spot-start value="${escapeAttr(s.startDate||'')}"></label>
+          <label>End date<input type="date" data-spot-end value="${escapeAttr(s.endDate||'')}"></label>
+          <label>Media seconds<input type="number" min="2" max="20" data-spot-media-seconds value="${Number(s.mediaSeconds||5)}"></label>
+        </div>
+
+        <div class="recognition-media-panel">
+          <div class="recognition-media-head">
+            <div><strong>Recognition Media</strong><span>${mediaCount} gallery item${mediaCount===1?'':'s'}</span></div>
+            <label class="switch-row"><input type="checkbox" data-spot-photo ${s.showPhoto!==false?'checked':''}> Show media</label>
+          </div>
+          <label class="upload">Primary portrait / fallback photo<input type="file" data-spot-upload accept="image/*"><small data-photo-status>${photoNote}. This remains as the fallback if the media gallery is empty.</small></label>
+          <label class="upload">Add gallery photos<input type="file" data-spot-media-photo accept="image/*" multiple><small>Select multiple photos at once.</small></label>
+          <label class="upload">Add gallery videos<input type="file" data-spot-media-video accept="video/mp4,video/webm,video/ogg" multiple><small>MP4/WebM recommended. Use YouTube for larger videos.</small></label>
+          <div class="youtube-add-row">
+            <label>YouTube link<input data-spot-youtube placeholder="https://www.youtube.com/watch?v=..."></label>
+            <button type="button" class="secondary-action" data-spot-add-youtube>Add YouTube</button>
+          </div>
+          <div class="recognition-media-grid">
+            ${s.media.map((m,mi)=>{
+              const thumb=m.type==='youtube'
+                ? `https://img.youtube.com/vi/${escapeAttr(m.videoId||youtubeIdFromUrl(m.src))}/hqdefault.jpg`
+                : m.src;
+              return `<div class="gallery-photo-tile ${mi===Number(s.coverIndex||0)?'cover-photo':''}" data-rec-media-index="${mi}">
+                ${m.type==='video'?`<video src="${escapeAttr(m.src)}" muted></video>`:`<img src="${escapeAttr(thumb)}" alt="">`}
+                <div class="gallery-media-type">${m.type==='image'?'PHOTO':m.type==='video'?'VIDEO':'YOUTUBE'}</div>
+                <div class="gallery-photo-badge">${mi===Number(s.coverIndex||0)?'COVER':`ITEM ${mi+1}`}</div>
+                <div class="gallery-photo-actions">
+                  <button type="button" data-rec-cover>Set Cover</button>
+                  <button type="button" data-rec-up ${mi===0?'disabled':''}>↑</button>
+                  <button type="button" data-rec-down ${mi===s.media.length-1?'disabled':''}>↓</button>
+                  <button type="button" data-rec-remove>Remove</button>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+
+      const typeSel=card.querySelector('[data-spot-type]');
+      const customWrap=card.querySelector('[data-custom-type-wrap]');
+      typeSel.addEventListener('change',()=>{
+        s.type=typeSel.value;
+        customWrap.style.display=s.type==='Custom'?'':'none';
+      });
+
+      card.querySelector('.remove-btn').addEventListener('click',()=>{data.spotlights.splice(i,1);renderSpotlights();status.textContent='Recognition removed. Save to apply.'});
+      card.querySelector('.duplicate-btn').addEventListener('click',()=>{const copy=clone(s);copy.name=copy.name?`${copy.name} Copy`:'';data.spotlights.splice(i+1,0,copy);renderSpotlights();status.textContent='Recognition duplicated.'});
+      card.querySelector('[data-spot-upload]').addEventListener('change',async e=>{const file=e.target.files[0];if(file){s.portrait=await resizeImage(file,720,960);card.querySelector('[data-photo-status]').textContent='Primary photo ready. Save CCN Display to apply.';status.textContent=`Primary photo ready for Recognition ${i+1}.`}});
+
+      card.querySelector('[data-spot-media-photo]').addEventListener('change',async e=>{
+        const files=[...e.target.files];
+        for(const file of files) s.media.push({type:'image',src:await resizeImage(file,1280,800,.80),name:file.name,loop:false,muted:true});
+        renderSpotlights();
+      });
+
+      card.querySelector('[data-spot-media-video]').addEventListener('change',async e=>{
+        const files=[...e.target.files];
+        for(const file of files){
+          if(file.size>12*1024*1024){status.textContent=`${file.name} is over 12 MB. Use YouTube or a smaller video.`;continue;}
+          const src=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);});
+          s.media.push({type:'video',src,name:file.name,loop:false,muted:true});
+        }
+        renderSpotlights();
+      });
+
+      card.querySelector('[data-spot-add-youtube]').addEventListener('click',()=>{
+        const input=card.querySelector('[data-spot-youtube]');
+        const id=youtubeIdFromUrl(input.value);
+        if(!id){status.textContent='That does not look like a valid YouTube link.';return;}
+        s.media.push({type:'youtube',src:input.value.trim(),videoId:id,name:'YouTube Video',loop:false,muted:true});
+        input.value='';
+        renderSpotlights();
+      });
+
+      card.querySelectorAll('[data-rec-media-index]').forEach(tile=>{
+        const mi=Number(tile.dataset.recMediaIndex);
+        tile.querySelector('[data-rec-cover]').addEventListener('click',()=>{s.coverIndex=mi;renderSpotlights();});
+        tile.querySelector('[data-rec-remove]').addEventListener('click',()=>{s.media.splice(mi,1);s.coverIndex=Math.max(0,Math.min(s.coverIndex,s.media.length-1));renderSpotlights();});
+        tile.querySelector('[data-rec-up]').addEventListener('click',()=>{if(mi>0){[s.media[mi-1],s.media[mi]]=[s.media[mi],s.media[mi-1]];if(s.coverIndex===mi)s.coverIndex=mi-1;else if(s.coverIndex===mi-1)s.coverIndex=mi;renderSpotlights();}});
+        tile.querySelector('[data-rec-down]').addEventListener('click',()=>{if(mi<s.media.length-1){[s.media[mi+1],s.media[mi]]=[s.media[mi],s.media[mi+1]];if(s.coverIndex===mi)s.coverIndex=mi+1;else if(s.coverIndex===mi+1)s.coverIndex=mi;renderSpotlights();}});
+      });
+
       spotlightsWrap.appendChild(card);
     });
   }
+
 
   document.getElementById('addTerm').addEventListener('click',()=>{data.keyTerms.push({word:'',definition:''});renderTerms();status.textContent='New term added.'});
   document.getElementById('addQuestion').addEventListener('click',()=>{data.exitQuestions.push('');renderQuestions();status.textContent='New exit question added.'});
   document.getElementById('addUpdate').addEventListener('click',()=>{data.announcements.push({headline:'',detail:'',status:''});renderUpdates();status.textContent='New announcement added.'});
   document.getElementById('addSpotlight').addEventListener('click',()=>{data.spotlights.push({type:'Cadet of the Year',enabled:true,name:'',detail:'',quote:'',badges:[],showPhoto:true,portrait:D.spotlights[0].portrait});renderSpotlights();status.textContent='New spotlight added.'});
+  document.getElementById('addCustomSection').addEventListener('click',()=>{data.customSections.push(newCustomSection());renderCustomSections();status.textContent='New custom section added.';});
 
   function collectResult(){
     const result=merge(clone(D),data);
@@ -119,15 +252,39 @@
     result.exitQuestions=Array.from(questionsWrap.querySelectorAll('.repeat')).map(card=>card.querySelector('[data-exit-question]')?.value.trim()||'').filter(Boolean);
     result.announcements=Array.from(updatesWrap.querySelectorAll('.repeat')).map(card=>({headline:card.querySelector('[data-update-headline]')?.value.trim()||'',detail:card.querySelector('[data-update-detail]')?.value.trim()||'',status:card.querySelector('[data-update-status]')?.value.trim()||''})).filter(x=>x.headline||x.detail||x.status);
     result.spotlights=Array.from(spotlightsWrap.querySelectorAll('.spotlight-editor-card')).map((card,i)=>({
-      type:card.querySelector('[data-spot-type]')?.value||'Cadet of the Year',
+      type:card.querySelector('[data-spot-type]')?.value||'Special Recognition',
+      customType:card.querySelector('[data-spot-customtype]')?.value.trim()||'',
       enabled:Boolean(card.querySelector('[data-spot-enabled]')?.checked),
+      showParents:Boolean(card.querySelector('[data-spot-parents]')?.checked),
+      headline:card.querySelector('[data-spot-headline]')?.value.trim()||'',
       name:card.querySelector('[data-spot-name]')?.value.trim()||'',
       detail:card.querySelector('[data-spot-detail]')?.value.trim()||'',
       quote:card.querySelector('[data-spot-quote]')?.value.trim()||'',
       badges:(card.querySelector('[data-spot-badges]')?.value||'').split(',').map(x=>x.trim()).filter(Boolean),
       showPhoto:Boolean(card.querySelector('[data-spot-photo]')?.checked),
-      portrait:data.spotlights[i]?.portrait||D.spotlights[0].portrait
+      portrait:data.spotlights[i]?.portrait||D.spotlights[0].portrait,
+      media:[...(data.spotlights[i]?.media||[])],
+      mediaSeconds:Math.max(2,Math.min(20,Number(card.querySelector('[data-spot-media-seconds]')?.value||5))),
+      coverIndex:Math.max(0,Math.min(Number(data.spotlights[i]?.coverIndex||0),Math.max(0,(data.spotlights[i]?.media||[]).length-1))),
+      startDate:card.querySelector('[data-spot-start]')?.value||'',
+      endDate:card.querySelector('[data-spot-end]')?.value||''
     }));
+    result.customSections=Array.from(customSectionsWrap.querySelectorAll('.custom-section-editor-card')).map((card,i)=>({
+      id:data.customSections[i]?.id||`custom-${Date.now()}-${i}`,
+      enabled:Boolean(card.querySelector('[data-custom-enabled]')?.checked),
+      showParents:Boolean(card.querySelector('[data-custom-parents]')?.checked),
+      showPhoto:Boolean(card.querySelector('[data-custom-photo]')?.checked),
+      group:card.querySelector('[data-custom-group]')?.value||'learn',
+      label:card.querySelector('[data-custom-label]')?.value.trim()||'Custom Section',
+      badge:card.querySelector('[data-custom-badge]')?.value.trim()||'',
+      callout:card.querySelector('[data-custom-callout]')?.value.trim()||'FEATURE',
+      title:card.querySelector('[data-custom-title]')?.value.trim()||'New Section',
+      cardTitle:card.querySelector('[data-custom-cardtitle]')?.value.trim()||'',
+      description:card.querySelector('[data-custom-description]')?.value.trim()||'',
+      meta:card.querySelector('[data-custom-meta]')?.value.trim()||'',
+      photo:data.customSections[i]?.photo||'assets/ui/event-no-photo.svg'
+    }));
+    collectUniversalGalleries(result);
     if (eventPhotoData) result.operation.photo = eventPhotoData;
     result.settings = result.settings || {};
     result.settings.updatedAt = new Date().toISOString();
@@ -334,5 +491,19 @@
 
 
   document.getElementById('reset').addEventListener('click',()=>{if(confirm('Reset all saved CCN content?')){localStorage.removeItem('ccnStreamingContent');location.reload()}});
-  renderTerms();renderQuestions();renderUpdates();renderSpotlights();
+  renderTerms();renderQuestions();renderUpdates();renderSpotlights();renderUniversalGalleries();renderCustomSections();
+
+  document.querySelectorAll('.inline-media-jump').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const target=btn.dataset.galleryTarget;
+      const galleryCard=universalGalleriesWrap.querySelector(`[data-gallery-key="${target}"]`);
+      if(galleryCard){
+        galleryCard.scrollIntoView({behavior:'smooth',block:'start'});
+        galleryCard.classList.add('gallery-flash');
+        setTimeout(()=>galleryCard.classList.remove('gallery-flash'),1600);
+      }
+    });
+  });
+
+
 })();

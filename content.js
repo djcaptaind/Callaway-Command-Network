@@ -72,13 +72,33 @@ window.CCN_STREAMING_DEFAULTS = {
   spotlights: [
     {
       type: "Cadet of the Month",
+      customType: "",
       enabled: true,
+      showParents: true,
       name: "C/SGT Jordan Smith",
+      headline: "",
       detail: "LET 3 and 4 • Drill Team • 3.8 GPA",
       quote: "Leadership means setting the example before giving the order.",
       badges: ["Leadership", "Service", "Academics"],
       showPhoto: true,
-      portrait: "assets/photos/cadet-portrait.jpg"
+      portrait: "assets/photos/cadet-portrait.jpg",
+      media: [],
+      mediaSeconds: 5,
+      coverIndex: 0,
+      startDate: "",
+      endDate: ""
     }
-  ]
+  ],
+  customSections: [],
+  galleries: {
+    lesson: { enabled: false, seconds: 5, coverIndex: 0, media: [] },
+    objective: { enabled: false, seconds: 5, coverIndex: 0, media: [] },
+    terms: { enabled: false, seconds: 5, coverIndex: 0, media: [] },
+    exit: { enabled: false, seconds: 5, coverIndex: 0, media: [] },
+    event: { enabled: false, seconds: 5, coverIndex: 0, media: [] },
+    announcements: { enabled: false, seconds: 5, coverIndex: 0, media: [] },
+    spotlights: { enabled: false, seconds: 5, coverIndex: 0, media: [] },
+    service: { enabled: false, seconds: 5, coverIndex: 0, media: [] }
+  }
+
 };

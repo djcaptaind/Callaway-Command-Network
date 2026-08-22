@@ -15,7 +15,45 @@
   if(C.display?.exit && C.exitQuestions?.length){sections.push(`<section class="section-card"><span class="kicker">${esc(C.titles?.exitLabel||'Exit Questions')}</span><h2>${esc(C.titles?.exitTitle||'Show What You Know')}</h2><div class="grid">${C.exitQuestions.map((q,i)=>`<div class="info-tile numbered"><span class="num">${i+1}</span><p>${esc(q)}</p></div>`).join('')}</div></section>`)}
   if(C.display?.event && C.operation?.title){const img=C.operation.showPhoto!==false?(C.operation.photo||'assets/photos/hero-adventure.jpg'):'assets/ui/event-no-photo.svg';sections.push(`<section class="section-card event-card"><div class="event-photo" style="background-image:url('${esc(img)}')"></div><div class="event-content"><span class="kicker">${esc(C.titles?.eventLabel||'Upcoming Event')}</span><h2>${esc(C.operation.title)}</h2><p>${esc(C.operation.detail)}</p><div class="chips"><span class="chip">${esc(C.operation.location||'Location TBD')}</span><span class="chip">${esc(new Date(C.operation.date).toLocaleString([], {month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}))}</span></div></div></section>`)}
   if(C.display?.announcements && C.announcements?.length){sections.push(`<section class="section-card"><span class="kicker">${esc(C.titles?.announcementLabel||'Announcements')}</span><h2>Announcements</h2><div class="grid">${C.announcements.filter(a=>a.headline||a.detail).map(a=>`<div class="info-tile"><strong>${esc(a.headline)}</strong><p>${esc(a.detail)}</p>${a.status?`<div class="chips"><span class="chip">${esc(a.status)}</span></div>`:''}</div>`).join('')}</div></section>`)}
-  if(C.display?.spotlights && Array.isArray(C.spotlights)){const ss=C.spotlights.filter(s=>s.enabled!==false&&s.name);if(ss.length)sections.push(`<section class="section-card"><span class="kicker">Recognition</span><h2>Cadet Spotlights</h2><div class="spotlights">${ss.map(s=>`<article class="spotlight">${s.showPhoto!==false&&s.portrait?`<img src="${esc(s.portrait)}" alt="${esc(s.name)}">`:''}<div class="spotlight-body"><span class="kicker">${esc(s.type||'Cadet Spotlight')}</span><h3>${esc(s.name)}</h3><p>${esc(s.detail||'')}</p>${s.quote?`<blockquote>“${esc(s.quote)}”</blockquote>`:''}</div></article>`).join('')}</div></section>`)}
+  if(C.display?.spotlights && Array.isArray(C.spotlights)){const ss=C.spotlights.filter(s=>s.enabled!==false&&s.name);if(ss.length)sections.push(`<section class="section-card"><span class="kicker">Recognition</span><h2>Recognition</h2><div class="spotlights">${ss.map(s=>`<article class="spotlight">${s.showPhoto!==false&&s.portrait?`<img src="${esc(s.portrait)}" alt="${esc(s.name)}">`:''}<div class="spotlight-body"><span class="kicker">${esc(s.type||'Recognition')}</span><h3>${esc(s.name)}</h3><p>${esc(s.detail||'')}</p>${s.quote?`<blockquote>“${esc(s.quote)}”</blockquote>`:''}</div></article>`).join('')}</div></section>`)}
   if(C.display?.service){sections.push(`<section class="section-card"><span class="kicker">${esc(C.titles?.serviceLabel||'Community Impact')}</span><h2>${esc(C.titles?.serviceTitle||'Service in Action')}</h2><p class="section-note">Celebrating leadership, teamwork, and service across the 4th Battalion Chargers.</p></section>`)}
+
+
+  if(Array.isArray(C.spotlights)){
+    C.spotlights.filter(s=>s && s.enabled!==false && s.showParents!==false && (s.headline||s.name)).forEach(s=>{
+      const label=s.type==='Custom'?(s.customType||'Custom Recognition'):(s.type||'Recognition');
+      const media=Array.isArray(s.media)?s.media:[];
+      const cover=media.length?media[Math.max(0,Math.min(Number(s.coverIndex||0),media.length-1))]:null;
+      const img=cover?.type==='image'?cover.src:(s.portrait||'assets/photos/card-spotlight-clean.jpg');
+      sections.push(`<section class="section-card recognition-parent-card">
+        <div class="custom-parent-photo" style="background-image:url('${esc(img)}')"></div>
+        <div class="custom-parent-content">
+          <span class="kicker">${esc(label)}</span>
+          <h2>${esc(s.headline||s.name)}</h2>
+          ${s.name && s.headline?`<h3>${esc(s.name)}</h3>`:''}
+          ${s.detail?`<p>${esc(s.detail)}</p>`:''}
+          ${s.quote?`<blockquote>${esc(s.quote)}</blockquote>`:''}
+          ${(s.badges||[]).length?`<div class="chips">${s.badges.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div>`:''}
+        </div>
+      </section>`);
+    });
+  }
+
+  if(Array.isArray(C.customSections)){
+    C.customSections.filter(s=>s && s.enabled!==false && s.showParents!==false && s.title).forEach(s=>{
+      const img=s.showPhoto!==false?(s.photo||'assets/ui/event-no-photo.svg'):'assets/ui/event-no-photo.svg';
+      const details=String(s.meta||'').split(/[•,|]/).map(x=>x.trim()).filter(Boolean);
+      sections.push(`<section class="section-card custom-parent-card">
+        ${s.showPhoto!==false?`<div class="custom-parent-photo" style="background-image:url('${esc(img)}')"></div>`:''}
+        <div class="custom-parent-content">
+          <span class="kicker">${esc(s.label||'Update')}</span>
+          <h2>${esc(s.title)}</h2>
+          ${s.description?`<p>${esc(s.description)}</p>`:''}
+          ${details.length?`<div class="chips">${details.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div>`:''}
+        </div>
+      </section>`);
+    });
+  }
+
   app.innerHTML=sections.join('')||'<section class="loading-card">No public sections are currently enabled.</section>';
 })();

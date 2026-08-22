@@ -10,3 +10,9 @@ body{background:radial-gradient(circle at 78% 0%,#0a4185 0%,#04152f 30%,#020a18 
 .hero-card,.section-card{background:linear-gradient(145deg,rgba(7,31,70,.82),rgba(3,18,43,.74));box-shadow:0 24px 65px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.035)}
 .info-tile{background:linear-gradient(145deg,rgba(4,26,61,.82),rgba(3,18,43,.75));border-color:rgba(39,167,255,.14)}
 .spotlight{box-shadow:0 18px 42px rgba(0,0,0,.27)}
+
+.custom-parent-card{padding:0;display:grid;grid-template-columns:minmax(260px,.75fr) 1.25fr;overflow:hidden}
+.custom-parent-photo{min-height:260px;background-size:cover;background-position:center}
+.custom-parent-content{padding:26px}
+.custom-parent-content>p{font-size:16px;line-height:1.55;color:#e8f0f8}
+@media(max-width:760px){.custom-parent-card{grid-template-columns:1fr}.custom-parent-photo{min-height:220px}}

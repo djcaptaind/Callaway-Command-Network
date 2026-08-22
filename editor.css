@@ -112,3 +112,56 @@ header{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-
     flex-direction:column;
   }
 }
+
+/* V18.7 Custom Section Builder */
+.custom-sections-box{border-color:rgba(255,112,0,.38);background:radial-gradient(circle at 92% 4%,rgba(255,108,0,.09),transparent 25%),linear-gradient(145deg,rgba(4,19,41,.9),rgba(3,13,29,.94))}
+.custom-section-editor-card{margin:18px 0;padding:20px;border:1px solid rgba(69,183,255,.22);border-left:4px solid var(--orange);border-radius:10px;background:linear-gradient(145deg,rgba(4,23,50,.88),rgba(2,12,28,.92));box-shadow:0 14px 35px rgba(0,0,0,.2)}
+.custom-toggle-grid{display:flex;gap:18px;flex-wrap:wrap;padding:9px 12px;background:rgba(2,11,25,.68);border:1px solid rgba(69,183,255,.12);border-radius:8px;margin:12px 0}
+.move-up-btn,.move-down-btn{background:#0a315c;border-color:rgba(69,183,255,.28);min-width:42px;padding:8px 10px}
+.move-up-btn:disabled,.move-down-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* V18.8 Universal Multi-Photo Galleries */
+.universal-gallery-box{border-color:rgba(69,183,255,.42);background:radial-gradient(circle at 92% 3%,rgba(10,112,255,.1),transparent 26%),linear-gradient(145deg,rgba(3,20,44,.92),rgba(2,11,26,.96))}
+.universal-gallery-card{margin:18px 0;padding:20px;border:1px solid rgba(69,183,255,.24);border-left:4px solid #168fff;border-radius:10px;background:linear-gradient(145deg,rgba(4,25,55,.9),rgba(2,12,28,.94))}
+.gallery-settings-row{align-items:end}.gallery-upload{margin:0}
+.gallery-photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:14px}
+.gallery-photo-tile{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.16);border-radius:10px;background:#07172f;min-height:170px}
+.gallery-photo-tile.cover-photo{border:2px solid #ff7900;box-shadow:0 0 20px rgba(255,121,0,.18)}
+.gallery-photo-tile img{width:100%;height:145px;object-fit:cover;display:block}
+.gallery-photo-badge{position:absolute;top:8px;left:8px;padding:5px 8px;border-radius:6px;background:rgba(3,13,28,.88);font-size:10px;font-weight:900;letter-spacing:.7px}
+.gallery-photo-tile.cover-photo .gallery-photo-badge{background:#ff6f00}
+.gallery-photo-actions{display:grid;grid-template-columns:1fr auto auto auto;gap:5px;padding:7px;background:#041126}
+.gallery-photo-actions button{padding:6px 7px;border-radius:6px;background:#0b315c;color:#fff;border:1px solid rgba(69,183,255,.2);font-size:10px}
+.gallery-photo-actions button:last-child{background:#6d2323}.gallery-photo-actions button:disabled{opacity:.35}
+
+/* V18.9 Photo + Video media controls */
+.youtube-add-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin:12px 0}
+.gallery-photo-tile video{width:100%;height:145px;object-fit:cover;background:#000;display:block}
+.gallery-media-type{position:absolute;top:8px;right:8px;padding:5px 8px;border-radius:6px;background:rgba(0,112,255,.88);font-size:9px;font-weight:900;letter-spacing:.7px}
+.gallery-media-options{display:flex;gap:12px;padding:6px 8px;background:rgba(1,9,21,.96);font-size:10px}
+.gallery-media-options label{margin:0;display:flex;align-items:center;gap:5px}
+.gallery-media-options input{width:auto}
+
+/* V18.9.1 Built-in media shortcuts + Recognition Center */
+.inline-media-panel{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin:12px 0 16px;
+  padding:12px 14px;
+  border:1px solid rgba(69,183,255,.24);
+  border-left:4px solid #168fff;
+  border-radius:8px;
+  background:rgba(3,21,46,.72);
+}
+.inline-media-panel strong{color:#fff}
+.inline-media-panel span{color:#b8c8da;font-size:12px;flex:1;min-width:240px}
+.inline-media-panel button{margin-left:auto}
+.universal-gallery-card.gallery-flash{box-shadow:0 0 0 2px #ff7900,0 0 36px rgba(255,121,0,.3)}
+.recognition-editor-card{border-left-color:#ff7900}
+.recognition-media-panel{margin-top:15px;padding:14px;border:1px solid rgba(69,183,255,.18);background:rgba(2,12,27,.62);border-radius:9px}
+.recognition-media-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.recognition-media-head strong{display:block;color:#fff}
+.recognition-media-head span{display:block;color:#8eb4d7;font-size:11px;margin-top:3px}
+.recognition-media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:12px}

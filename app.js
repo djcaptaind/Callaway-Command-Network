@@ -43,6 +43,43 @@
   const toDate = value => { const d=new Date(value); return Number.isNaN(d.getTime())?null:d; };
   const daysUntil = value => { const d=toDate(value); return d?Math.max(0,Math.ceil((d-new Date())/86400000)):0; };
   const formatDate = value => { const d=toDate(value); return d?d.toLocaleDateString([], {weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase():'DATE TBD'; };
+  const recognitionActive = item => {
+    const today=new Date();
+    today.setHours(0,0,0,0);
+    if(item.startDate){
+      const s=new Date(item.startDate+'T00:00:00');
+      if(today<s) return false;
+    }
+    if(item.endDate){
+      const e=new Date(item.endDate+'T23:59:59');
+      if(today>e) return false;
+    }
+    return true;
+  };
+  const galleryFor = key => {
+    const g=C.galleries?.[key];
+    if(!g || g.enabled===false) return null;
+    let media=Array.isArray(g.media)?g.media:[];
+    if(!media.length && Array.isArray(g.photos)){
+      media=g.photos.map(src=>({type:'image',src}));
+    }
+    if(!media.length) return null;
+    const coverIndex=Math.max(0,Math.min(Number(g.coverIndex||0),media.length-1));
+    return {media,coverIndex,seconds:Math.max(2,Math.min(20,Number(g.seconds||5)))};
+  };
+  const coverFor = (key,fallback) => {
+    const g=galleryFor(key);
+    if(!g) return fallback;
+    const item=g.media[g.coverIndex];
+    if(!item) return fallback;
+    if(item.type==='image') return item.src;
+    if(item.type==='youtube'){
+      const id=item.videoId||String(item.src||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{6,})/)?.[1];
+      return id?`https://img.youtube.com/vi/${id}/hqdefault.jpg`:fallback;
+    }
+    return fallback;
+  };
+
 
   const announcementHeroes = [
     ['assets/photos/hero-uniform.jpg','assets/photos/card-uniform.jpg'],
@@ -51,36 +88,91 @@
   ];
 
   const items=[];
-  if(C.display?.lesson!==false) items.push({id:'lesson',group:'lesson',tag:C.titles?.lessonLabel||"TODAY'S LESSON",callout:'NOW PLAYING',title:C.lesson?.title||"Today's Lesson",cardTitle:readableCardTitle(C.lesson?.cardTitle,C.lesson?.title||"Today's Lesson",5),titleHtml:accentLast(C.lesson?.title||"Today's Lesson"),description:C.lesson?.hook||'',meta:[C.lesson?.let,C.lesson?.lesson,C.lesson?.duration],context:'BE THE BEST • COMPETE • LEAD',hero:'assets/photos/hero-lesson.jpg',card:'assets/photos/card-lesson-clean.jpg',badge:'FEATURED'});
-  if(C.display?.objective!==false) items.push({id:'objective',group:'learn',tag:C.titles?.objectiveLabel||'LESSON OBJECTIVE',callout:"TODAY'S FOCUS",title:C.titles?.objectiveTitle||'KNOW THE STANDARD',cardTitle:readableCardTitle(C.titles?.objectiveCardTitle,'Lesson Objective',4),titleHtml:accentLast(C.titles?.objectiveTitle||'KNOW THE STANDARD'),description:C.lesson?.objective||'',meta:['Objective',C.lesson?.let],context:'LOCK IN. KNOW THE STANDARD.',hero:'assets/photos/hero-objective.jpg',card:'assets/photos/card-objective.jpg',badge:'LEARN'});
-  if(C.display?.terms!==false && C.keyTerms?.length) items.push({id:'terms',group:'learn',tag:C.titles?.termsLabel||'KEY TERMS',callout:'WORDS TO KNOW',title:C.titles?.termsTitle||'WORDS TO KNOW',titleHtml:accentLast(C.titles?.termsTitle||'WORDS TO KNOW'),description:C.keyTerms.map(x=>x.word).join(' • '),meta:[`${C.keyTerms.length} Terms`],context:'BUILD YOUR VOCABULARY.',hero:'assets/photos/hero-terms.jpg',card:'assets/photos/card-terms.jpg',badge:`${C.keyTerms.length} TERMS`});
-  if(C.display?.exit!==false && C.exitQuestions?.length) items.push({id:'exit',group:'learn',tag:C.titles?.exitLabel||'EXIT QUESTIONS',callout:'EXIT TICKET',title:C.titles?.exitTitle||'SHOW WHAT YOU KNOW',titleHtml:accentLast(C.titles?.exitTitle||'SHOW WHAT YOU KNOW'),description:C.exitQuestions[0],meta:[`${C.exitQuestions.length} Questions`],context:'FINISH STRONG.',hero:'assets/photos/hero-exit.jpg',card:'assets/photos/card-exit.jpg',badge:'EXIT'});
+  if(C.display?.lesson!==false) items.push({id:'lesson',group:'lesson',tag:C.titles?.lessonLabel||"TODAY'S LESSON",callout:'NOW PLAYING',title:C.lesson?.title||"Today's Lesson",cardTitle:readableCardTitle(C.lesson?.cardTitle,C.lesson?.title||"Today's Lesson",5),titleHtml:accentLast(C.lesson?.title||"Today's Lesson"),description:C.lesson?.hook||'',meta:[C.lesson?.let,C.lesson?.lesson,C.lesson?.duration],context:'BE THE BEST • COMPETE • LEAD',hero:coverFor('lesson','assets/photos/hero-lesson.jpg'),card:coverFor('lesson','assets/photos/card-lesson-clean.jpg'),badge:'FEATURED',galleryKey:'lesson'});
+  if(C.display?.objective!==false) items.push({id:'objective',group:'learn',tag:C.titles?.objectiveLabel||'LESSON OBJECTIVE',callout:"TODAY'S FOCUS",title:C.titles?.objectiveTitle||'KNOW THE STANDARD',cardTitle:readableCardTitle(C.titles?.objectiveCardTitle,'Lesson Objective',4),titleHtml:accentLast(C.titles?.objectiveTitle||'KNOW THE STANDARD'),description:C.lesson?.objective||'',meta:['Objective',C.lesson?.let],context:'LOCK IN. KNOW THE STANDARD.',hero:coverFor('objective','assets/photos/hero-objective.jpg'),card:coverFor('objective','assets/photos/card-objective.jpg'),badge:'LEARN',galleryKey:'objective'});
+  if(C.display?.terms!==false && C.keyTerms?.length) items.push({id:'terms',group:'learn',tag:C.titles?.termsLabel||'KEY TERMS',callout:'WORDS TO KNOW',title:C.titles?.termsTitle||'WORDS TO KNOW',titleHtml:accentLast(C.titles?.termsTitle||'WORDS TO KNOW'),description:C.keyTerms.map(x=>x.word).join(' • '),meta:[`${C.keyTerms.length} Terms`],context:'BUILD YOUR VOCABULARY.',hero:coverFor('terms','assets/photos/hero-terms.jpg'),card:coverFor('terms','assets/photos/card-terms.jpg'),badge:`${C.keyTerms.length} TERMS`,galleryKey:'terms'});
+  if(C.display?.exit!==false && C.exitQuestions?.length) items.push({id:'exit',group:'learn',tag:C.titles?.exitLabel||'EXIT QUESTIONS',callout:'EXIT TICKET',title:C.titles?.exitTitle||'SHOW WHAT YOU KNOW',titleHtml:accentLast(C.titles?.exitTitle||'SHOW WHAT YOU KNOW'),description:C.exitQuestions[0],meta:[`${C.exitQuestions.length} Questions`],context:'FINISH STRONG.',hero:coverFor('exit','assets/photos/hero-exit.jpg'),card:coverFor('exit','assets/photos/card-exit.jpg'),badge:'EXIT',galleryKey:'exit'});
 
   if(C.display?.event!==false && C.operation?.title){
-    const photo=C.operation.showPhoto===false?'assets/ui/event-no-photo.svg':(C.operation.photo||'assets/photos/hero-adventure.jpg');
+    const basePhoto=C.operation.showPhoto===false?'assets/ui/event-no-photo.svg':(C.operation.photo||'assets/photos/hero-adventure.jpg');
+    const photo=coverFor('event',basePhoto);
     items.push({id:'operation',group:'events',tag:C.titles?.eventLabel||'UPCOMING EVENT',callout:'UPCOMING EVENT',title:C.operation.title,titleHtml:accentLast(C.operation.title),description:C.operation.detail||'',meta:[formatDate(C.operation.date),C.operation.location],context:'STAY READY.',hero:photo,card:photo,badge:`${daysUntil(C.operation.date)} DAYS`});
   }
 
   if(C.display?.announcements!==false && Array.isArray(C.announcements)){
     C.announcements.filter(a=>a&&(a.headline||a.detail)).forEach((a,i)=>{
       const art=announcementHeroes[i%announcementHeroes.length];
-      items.push({id:`announcement-${i}`,group:'events',tag:C.titles?.announcementLabel||'ANNOUNCEMENT',callout:a.status||'ANNOUNCEMENT',title:a.headline||'Announcement',titleHtml:accentLast(a.headline||'Announcement'),description:a.detail||'',meta:[],context:'STAY INFORMED. STAY READY.',hero:art[0],card:art[1],badge:a.status||'UPDATE'});
+      items.push({id:`announcement-${i}`,group:'events',tag:C.titles?.announcementLabel||'ANNOUNCEMENT',callout:a.status||'ANNOUNCEMENT',title:a.headline||'Announcement',titleHtml:accentLast(a.headline||'Announcement'),description:a.detail||'',meta:[],context:'STAY INFORMED. STAY READY.',hero:coverFor('announcements',art[0]),card:coverFor('announcements',art[1]),badge:a.status||'UPDATE',galleryKey:'announcements'});
     });
   }
 
   if(C.display?.spotlights!==false && Array.isArray(C.spotlights)){
-    C.spotlights.filter(s=>s&&s.enabled!==false&&s.name).forEach((s,i)=>{
-      const t=(s.type||'').toLowerCase(); const badge=t.includes('year')?'YEAR':t.includes('month')?'MONTH':'WEEK';
+    C.spotlights.filter(s=>s&&s.enabled!==false&&recognitionActive(s)&&(s.name||s.headline)).forEach((s,i)=>{
+      const label=s.type==='Custom'?(s.customType||'Custom Recognition'):(s.type||'Special Recognition');
+      const t=label.toLowerCase();
+      const badge=t.includes('year')?'YEAR':t.includes('month')?'MONTH':t.includes('week')?'WEEK':t.includes('staff')?'STAFF':t.includes('team')?'TEAM':t.includes('congrat')?'CONGRATS':'RECOGNITION';
+      const recognitionMedia=Array.isArray(s.media)?s.media:[];
+      const mediaCover=recognitionMedia.length?recognitionMedia[Math.max(0,Math.min(Number(s.coverIndex||0),recognitionMedia.length-1))]:null;
+      const coverImage=mediaCover?.type==='image'
+        ? mediaCover.src
+        : mediaCover?.type==='youtube'
+          ? `https://img.youtube.com/vi/${mediaCover.videoId||String(mediaCover.src||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{6,})/)?.[1]}/hqdefault.jpg`
+          : null;
       const portraitVisible=s.showPhoto!==false && Boolean(s.portrait);
-      items.push({id:`spotlight-${i}`,group:'spotlight',tag:s.type||'CADET SPOTLIGHT',callout:'RECOGNITION',title:s.name,titleHtml:(()=>{const p=esc(s.name).split(/\s+/);const last=p.pop()||'';return `${p.join(' ')} <span class="accent">${last}</span>`})(),description:s.detail||'',meta:s.badges||[],context:s.quote?`“${s.quote}”`:'',hero:'assets/photos/hero-spotlight-clean.jpg',card:portraitVisible?s.portrait:'assets/photos/card-spotlight-clean.jpg',badge,portrait:s.portrait,showPhoto:s.showPhoto!==false});
+      const displayTitle=s.headline||s.name||label;
+      items.push({
+        id:`spotlight-${i}`,
+        group:'spotlight',
+        tag:label,
+        callout:'RECOGNITION',
+        title:displayTitle,
+        cardTitle:readableCardTitle('',displayTitle,5),
+        titleHtml:accentLast(displayTitle),
+        description:s.detail||s.name||'',
+        meta:s.badges||[],
+        context:s.quote?`“${s.quote}”`:'',
+        hero:coverImage||'assets/photos/hero-spotlight-clean.jpg',
+        card:coverImage||(portraitVisible?s.portrait:'assets/photos/card-spotlight-clean.jpg'),
+        badge,
+        portrait:s.portrait,
+        showPhoto:s.showPhoto!==false,
+        recognitionMedia,
+        recognitionMediaSeconds:Math.max(2,Math.min(20,Number(s.mediaSeconds||5)))
+      });
     });
   }
 
-  if(C.display?.service!==false) items.push({id:'service',group:'spotlight',tag:C.titles?.serviceLabel||'COMMUNITY IMPACT',callout:'CALLAWAY PRIDE',title:C.titles?.serviceTitle||'SERVICE IN ACTION',titleHtml:accentLast(C.titles?.serviceTitle||'SERVICE IN ACTION'),description:'Leadership is measured by the positive impact we create for others.',meta:['Community','Teamwork','Service'],context:'MAKE A DIFFERENCE.',hero:'assets/photos/hero-service.jpg',card:'assets/photos/card-service.jpg',badge:'IMPACT'});
+  if(Array.isArray(C.customSections)){
+    C.customSections.filter(s=>s && s.enabled!==false && s.title).forEach((s,i)=>{
+      const photoVisible=s.showPhoto!==false && Boolean(s.photo);
+      const photo=photoVisible?s.photo:'assets/ui/event-no-photo.svg';
+      const meta=String(s.meta||'').split(/[•,|]/).map(x=>x.trim()).filter(Boolean).slice(0,4);
+      items.push({
+        id:`custom-${i}-${String(s.id||i).replace(/[^a-z0-9_-]/gi,'')}`,
+        group:s.group==='home'?'home':(s.group||'learn'),
+        tag:s.label||'CUSTOM SECTION',
+        callout:s.callout||'FEATURE',
+        title:s.title,
+        cardTitle:readableCardTitle(s.cardTitle,s.title,5),
+        titleHtml:accentLast(s.title),
+        description:s.description||'',
+        meta,
+        context:'',
+        hero:photo,
+        card:photo,
+        badge:s.badge||'FEATURE',
+        customSection:true
+      });
+    });
+  }
+
+  if(C.display?.service!==false) items.push({id:'service',group:'spotlight',tag:C.titles?.serviceLabel||'COMMUNITY IMPACT',callout:'CALLAWAY PRIDE',title:C.titles?.serviceTitle||'SERVICE IN ACTION',titleHtml:accentLast(C.titles?.serviceTitle||'SERVICE IN ACTION'),description:'Leadership is measured by the positive impact we create for others.',meta:['Community','Teamwork','Service'],context:'MAKE A DIFFERENCE.',hero:coverFor('service','assets/photos/hero-service.jpg'),card:coverFor('service','assets/photos/card-service.jpg'),badge:'IMPACT',galleryKey:'service'});
 
   const app=document.getElementById('app'), heroBg=document.getElementById('heroBackground'), heroCopy=document.getElementById('heroCopy'), rail=document.getElementById('rail'), rowTitle=document.getElementById('rowTitle'), featureIndex=document.getElementById('featureIndex'), featureTotal=document.getElementById('featureTotal'), pausedBadge=document.getElementById('pausedBadge');
+  const heroMediaLayer=document.getElementById('heroMediaLayer');
   const spotlightPhotoPanel=document.getElementById('spotlightPhotoPanel'), spotlightPhoto=document.getElementById('spotlightPhoto'), spotlightPhotoType=document.getElementById('spotlightPhotoType'), spotlightPhotoName=document.getElementById('spotlightPhotoName');
   let visible=[...items],index=0,timer=null,paused=!(C.settings?.autoplay!==false),seconds=Math.max(6,Number(C.settings?.secondsPerFeature||11));
+  let heroGalleryTimer=null,heroGalleryIndex=0;
   app.style.setProperty('--feature-seconds',`${seconds}s`);
   rowTitle.textContent=C.settings?.lineupTitle||"Today's Lineup";
   featureTotal.textContent=String(visible.length).padStart(2,'0');
@@ -109,6 +201,91 @@
     rail.querySelectorAll('.card').forEach(c=>c.addEventListener('click',()=>show(Number(c.dataset.index),true)));
   }
 
+  function stopHeroGallery(){
+    clearInterval(heroGalleryTimer);
+    heroGalleryTimer=null;
+    heroGalleryIndex=0;
+    if(heroMediaLayer){
+      heroMediaLayer.innerHTML='';
+      heroMediaLayer.hidden=true;
+    }
+  }
+
+  function playHeroMediaItem(item,done){
+    if(!heroMediaLayer || !item){
+      done?.(); return;
+    }
+    heroMediaLayer.innerHTML='';
+    heroMediaLayer.hidden=false;
+
+    if(item.type==='video'){
+      const video=document.createElement('video');
+      video.src=item.src;
+      video.autoplay=true;
+      video.playsInline=true;
+      video.muted=item.muted!==false;
+      video.loop=Boolean(item.loop);
+      video.className='hero-media-video';
+      if(!video.loop) video.addEventListener('ended',()=>done?.(),{once:true});
+      video.addEventListener('error',()=>done?.(),{once:true});
+      heroMediaLayer.appendChild(video);
+      video.play().catch(()=>done?.());
+      return;
+    }
+
+    if(item.type==='youtube'){
+      const id=item.videoId||String(item.src||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{6,})/)?.[1];
+      if(!id){done?.();return;}
+      const iframe=document.createElement('iframe');
+      const loop=item.loop?`&loop=1&playlist=${id}`:'';
+      iframe.src=`https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1${loop}`;
+      iframe.allow='autoplay; encrypted-media; picture-in-picture';
+      iframe.referrerPolicy='strict-origin-when-cross-origin';
+      iframe.className='hero-media-youtube';
+      heroMediaLayer.appendChild(iframe);
+      // YouTube iframe API is intentionally avoided. Advance after a safe default.
+      if(!item.loop) heroGalleryTimer=setTimeout(()=>done?.(),Math.max(10,seconds)*1000);
+      return;
+    }
+
+    heroMediaLayer.hidden=true;
+    heroBg.classList.remove('animate');
+    heroBg.style.backgroundImage=`url('${item.src}')`;
+    requestAnimationFrame(()=>heroBg.classList.add('animate'));
+    heroGalleryTimer=setTimeout(()=>done?.(),5000);
+  }
+
+  function startHeroGallery(item){
+    stopHeroGallery();
+    let g=item.galleryKey?galleryFor(item.galleryKey):null;
+    if((!g || !g.media.length) && Array.isArray(item.recognitionMedia) && item.recognitionMedia.length){
+      g={media:item.recognitionMedia,coverIndex:0,seconds:item.recognitionMediaSeconds||5};
+    }
+    if(!g || !g.media.length) return;
+    heroGalleryIndex=g.coverIndex||0;
+
+    const advance=()=>{
+      if(!g.media.length) return;
+      const current=g.media[heroGalleryIndex];
+      if(current.type==='image'){
+        if(heroMediaLayer){heroMediaLayer.innerHTML='';heroMediaLayer.hidden=true;}
+        heroBg.classList.remove('animate');
+        heroBg.style.backgroundImage=`url('${current.src}')`;
+        requestAnimationFrame(()=>heroBg.classList.add('animate'));
+        heroGalleryTimer=setTimeout(()=>{
+          heroGalleryIndex=(heroGalleryIndex+1)%g.media.length;
+          advance();
+        },g.seconds*1000);
+      }else{
+        playHeroMediaItem(current,()=>{
+          heroGalleryIndex=(heroGalleryIndex+1)%g.media.length;
+          advance();
+        });
+      }
+    };
+    advance();
+  }
+
   function renderHero(item){
     heroCopy.classList.add('fade');
     setTimeout(()=>{
@@ -125,7 +302,9 @@
       } else if(spotlightPhoto){
         spotlightPhoto.removeAttribute('src');
       }
-      heroBg.classList.remove('animate'); heroBg.style.backgroundImage=`url('${item.hero}')`; requestAnimationFrame(()=>heroBg.classList.add('animate'));
+      stopHeroGallery();
+            heroBg.classList.remove('animate'); heroBg.style.backgroundImage=`url('${item.hero}')`; requestAnimationFrame(()=>heroBg.classList.add('animate'));
+      startHeroGallery(item);
       heroCopy.classList.remove('terms-mode','exit-mode','objective-mode','spotlight-mode','term-count-1','term-count-2','term-count-3','term-count-4','term-count-many','exit-count-1','exit-count-2','exit-count-3','exit-count-4','exit-count-many','objective-long','objective-xlong');
       if(showSpotlightPhoto) heroCopy.classList.add('spotlight-mode');
       if(item.id==='terms'){

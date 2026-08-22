@@ -1,3 +1,103 @@
+CALLAWAY COMMAND NETWORK V18.9.1 — UNIVERSAL MEDIA + RECOGNITION CENTER FIX
+
+FIXED
+- Today’s Lesson, Lesson Objective, Key Terms, Exit Questions, and Announcements now have direct media-management buttons inside their editor sections.
+- Those buttons jump directly to the correct universal photo/video gallery.
+
+RECOGNITION CENTER
+- Cadet of the Week
+- Cadet of the Month
+- Cadet of the Year
+- Congratulations
+- Staff Recognition
+- Special Recognition
+- Team Recognition
+- Academic Achievement
+- Promotion
+- Competition Achievement
+- College / Scholarship Acceptance
+- Community Service
+- Birthday / Shout-Out
+- Alumni Spotlight
+- Custom recognition type
+
+EACH RECOGNITION CAN HAVE
+- headline/title
+- cadet/staff/team/group name
+- details
+- quote/message
+- badges
+- start/end dates
+- Parent View visibility
+- primary portrait
+- multiple photos
+- multiple uploaded videos
+- YouTube links
+- cover media
+- show/hide controls
+
+All previous V18.9 photo/video media, custom sections, parent view, spotlight photo fixes, and one-click GitHub publishing remain included.
+
+CALLAWAY COMMAND NETWORK V18.9 — UNIVERSAL PHOTO + VIDEO MEDIA MODE
+
+NEW IN V18.9
+- Every major CCN section can now mix photos and videos in the same media gallery.
+- Upload MP4/WebM/OGG video files.
+- Add YouTube links without storing large video files in GitHub/browser storage.
+- Select multiple photos and multiple local videos.
+- Choose any media item as the cover item.
+- Reorder and remove media.
+- Local videos can be muted/unmuted and looped.
+- YouTube videos autoplay muted; loop can be enabled.
+- Photo timing is still adjustable from 2–20 seconds.
+- The TV automatically returns to the next media item after local video playback ends.
+- Existing V18.8 photo galleries migrate automatically.
+- Custom Sections, Parent View, spotlight photos, and one-click GitHub publishing remain intact.
+
+NOTES
+- Large local videos can exceed browser localStorage limits. The editor warns on videos over 12 MB.
+- YouTube is recommended for longer videos.
+- Browsers typically require autoplay video to be muted; uploaded videos default to muted.
+
+CALLAWAY COMMAND NETWORK V18.8 — UNIVERSAL MULTI-PHOTO MODE
+
+NEW IN V18.8
+- Add multiple pictures to Today’s Lesson, Objective, Key Terms, Exit Questions, Upcoming Event, Announcements, Cadet Spotlights, and Community Impact.
+- Select multiple pictures at once.
+- Choose a cover picture for the lineup card.
+- Reorder and remove pictures.
+- Turn each gallery on/off without deleting it.
+- Set slideshow timing from 2–20 seconds.
+- The large TV hero rotates gallery photos automatically.
+- Existing single photos remain as fallbacks.
+- V18.7 Custom Sections and V18.6 One-Click GitHub publishing remain included.
+
+CALLAWAY COMMAND NETWORK V18.7 — CUSTOM SECTIONS MODE
+
+NEW IN V18.7
+- Add unlimited custom TV sections from Content Studio.
+- Rename every custom section.
+- Choose Home, Today’s Lesson, Learn, Events, or Recognition category.
+- Add a separate large/card picture for each section using one upload.
+- Hide/show each section without deleting it.
+- Hide/show the picture without deleting it.
+- Choose whether a section appears on Parent View.
+- Short lineup-card title field.
+- Custom badge, feature callout, details/chips, and description.
+- Duplicate, remove, and reorder custom sections.
+- Custom sections are included in shared-content.json and One-Click GitHub Publish.
+- All V18.6 GitHub publishing and V18.5 spotlight-photo features remain intact.
+
+HOW TO USE
+1. Open instructor/editor.html.
+2. Find Custom Section Builder.
+3. Click + Add Custom Section.
+4. Choose the navigation category.
+5. Add title, description, badge, details, and picture.
+6. Use the arrows to reorder your custom sections.
+7. Save Local Draft and preview.
+8. Publish Directly to GitHub when ready.
+
 CALLAWAY COMMAND NETWORK V18.6 — ONE-CLICK GITHUB PUBLISH
 
 NEW IN V18.6
