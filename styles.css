@@ -1958,3 +1958,16 @@ span{
 }
 .lineup-zone{overflow:hidden!important}
 .utility-row{position:relative!important;z-index:8!important}
+
+/* V20.4 adaptive titles */
+.card.cinematic-card .card-copy{height:52%!important;padding:.55vh .78vw .48vh!important}
+.card.cinematic-card .cinematic-card-media{height:52%!important}
+.card.cinematic-card h3{display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:3!important;overflow:hidden!important;max-height:3.15em!important;white-space:normal!important;text-wrap:balance!important}
+.card.cinematic-card h3.card-title-short{font-size:clamp(14px,.96vw,18px)!important;line-height:1.03!important}
+.card.cinematic-card h3.card-title-long{font-size:clamp(13px,.86vw,16px)!important;line-height:1.03!important}
+.card.cinematic-card h3.card-title-xlong{font-size:clamp(11.5px,.76vw,14.5px)!important;line-height:1.04!important}
+.card.cinematic-card h3.card-title-xxlong{font-size:clamp(10px,.67vw,13px)!important;line-height:1.05!important}
+.card.cinematic-card h3.card-font-small{font-size:clamp(10px,.67vw,13px)!important}.card.cinematic-card h3.card-font-medium{font-size:clamp(12px,.8vw,15px)!important}.card.cinematic-card h3.card-font-large{font-size:clamp(14px,.96vw,18px)!important}.card.cinematic-card h3.card-font-xl{font-size:clamp(16px,1.08vw,20px)!important}
+.card.cinematic-card h3.card-title-xlong + .card-description,.card.cinematic-card h3.card-title-xxlong + .card-description{font-size:clamp(7.5px,.5vw,9.5px)!important;max-height:1.25em!important}
+.card.cinematic-card[data-id^="spotlight-"] .cinematic-card-media{height:60%!important}.card.cinematic-card[data-id^="spotlight-"] .card-copy{height:44%!important}
+.font-size-control-box{border-color:rgba(70,184,255,.35)!important;background:linear-gradient(145deg,rgba(3,20,43,.92),rgba(2,11,25,.96))!important}

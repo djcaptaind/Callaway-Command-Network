@@ -114,5 +114,10 @@ window.CCN_STREAMING_DEFAULTS = {
     promotion: "promotion-chevron.svg",
     academic: "academic-cap.svg"
   }
+,
+  fontSizes: {
+    lesson: "auto", objective: "auto", terms: "auto", exit: "auto",
+    event: "auto", announcements: "auto", recognition: "auto", service: "auto"
+  }
 
 };

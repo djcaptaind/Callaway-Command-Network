@@ -1,3 +1,11 @@
+CALLAWAY COMMAND NETWORK V20.4 — ALL CORRECTIONS
+
+- Long Today’s Lesson titles auto-shrink and can use up to 3 lines.
+- Content Studio adds Auto / Small / Medium / Large / XL card-title controls.
+- Custom Sections get the same font-size control.
+- Manage Media cover images become cinematic card media where supported.
+- Cinematic cards, repaired hero/tabs/media manager, integrated Recognition portraits, one-row lineup, Parent View, custom sections, photos/videos/YouTube, and GitHub publishing are preserved.
+
 CALLAWAY COMMAND NETWORK V20.3.2 — CINEMATIC CARD ART + RUNTIME MEDIA MERGE
 
 MERGED

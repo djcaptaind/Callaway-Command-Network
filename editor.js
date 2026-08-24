@@ -545,7 +545,8 @@
       description:card.querySelector('[data-custom-description]')?.value.trim()||'',
       meta:card.querySelector('[data-custom-meta]')?.value.trim()||'',
       photo:data.customSections[i]?.photo||'assets/ui/event-no-photo.svg',
-      artwork:card.querySelector('[data-custom-artwork]')?.value||'lesson-board.svg'
+      artwork:card.querySelector('[data-custom-artwork]')?.value||'lesson-board.svg',
+      fontPref:card.querySelector('[data-custom-fontpref]')?.value||'auto'
     }));
     // V18.9.2: serialize universal media galleries directly inside collectResult.
     result.galleries = result.galleries || {};

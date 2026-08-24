@@ -98,6 +98,15 @@
     promotion:'promotion-chevron.svg',
     academic:'academic-cap.svg'
   };
+  const fontPrefFor = key => (C.fontSizes?.[key] || 'auto');
+  const titleLengthClass = value => { const n=String(value||'').trim().length; return n>72?'card-title-xxlong':n>48?'card-title-xlong':n>30?'card-title-long':'card-title-short'; };
+  const cardMediaFor = (key,fallback) => {
+    const g=galleryFor(key); if(!g) return fallback;
+    const item=g.media[g.coverIndex]; if(!item) return fallback;
+    if(item.type==='image') return item.src;
+    if(item.type==='youtube'){ const id=item.videoId||String(item.src||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{6,})/)?.[1]; return id?`https://img.youtube.com/vi/${id}/hqdefault.jpg`:fallback; }
+    return fallback;
+  };
   const artworkFile = key => {
     const name=C.artwork?.[key] || DEFAULT_ARTWORK[key] || '';
     return name ? `assets/icons/${name}` : '';
@@ -110,21 +119,21 @@
   ];
 
   const items=[];
-  if(C.display?.lesson!==false) items.push({id:'lesson',group:'lesson',tag:C.titles?.lessonLabel||"TODAY'S LESSON",callout:'NOW PLAYING',title:C.lesson?.title||"Today's Lesson",cardTitle:readableCardTitle(C.lesson?.cardTitle,C.lesson?.title||"Today's Lesson",5),titleHtml:accentLast(C.lesson?.title||"Today's Lesson"),description:C.lesson?.hook||'',meta:[C.lesson?.let,C.lesson?.lesson,C.lesson?.duration],context:'BE THE BEST • COMPETE • LEAD',hero:coverFor('lesson','assets/photos/hero-lesson.jpg'),card:coverFor('lesson','assets/photos/card-lesson-clean.jpg'),badge:'FEATURED',galleryKey:'lesson',artwork:artworkFile('lesson')});
-  if(C.display?.objective!==false) items.push({id:'objective',group:'learn',tag:C.titles?.objectiveLabel||'LESSON OBJECTIVE',callout:"TODAY'S FOCUS",title:C.titles?.objectiveTitle||'KNOW THE STANDARD',cardTitle:readableCardTitle(C.titles?.objectiveCardTitle,'Lesson Objective',4),titleHtml:accentLast(C.titles?.objectiveTitle||'KNOW THE STANDARD'),description:C.lesson?.objective||'',meta:['Objective',C.lesson?.let],context:'LOCK IN. KNOW THE STANDARD.',hero:coverFor('objective','assets/photos/hero-objective.jpg'),card:coverFor('objective','assets/photos/card-objective.jpg'),badge:'LEARN',galleryKey:'objective',artwork:artworkFile('objective')});
-  if(C.display?.terms!==false && C.keyTerms?.length) items.push({id:'terms',group:'learn',tag:C.titles?.termsLabel||'KEY TERMS',callout:'WORDS TO KNOW',title:C.titles?.termsTitle||'WORDS TO KNOW',titleHtml:accentLast(C.titles?.termsTitle||'WORDS TO KNOW'),description:C.keyTerms.map(x=>x.word).join(' • '),meta:[`${C.keyTerms.length} Terms`],context:'BUILD YOUR VOCABULARY.',hero:coverFor('terms','assets/photos/hero-terms.jpg'),card:coverFor('terms','assets/photos/card-terms.jpg'),badge:`${C.keyTerms.length} TERMS`,galleryKey:'terms',artwork:artworkFile('terms')});
-  if(C.display?.exit!==false && C.exitQuestions?.length) items.push({id:'exit',group:'learn',tag:C.titles?.exitLabel||'EXIT QUESTIONS',callout:'EXIT TICKET',title:C.titles?.exitTitle||'SHOW WHAT YOU KNOW',titleHtml:accentLast(C.titles?.exitTitle||'SHOW WHAT YOU KNOW'),description:C.exitQuestions[0],meta:[`${C.exitQuestions.length} Questions`],context:'FINISH STRONG.',hero:coverFor('exit','assets/photos/hero-exit.jpg'),card:coverFor('exit','assets/photos/card-exit.jpg'),badge:'EXIT',galleryKey:'exit',artwork:artworkFile('exit')});
+  if(C.display?.lesson!==false) items.push({id:'lesson',group:'lesson',tag:C.titles?.lessonLabel||"TODAY'S LESSON",callout:'NOW PLAYING',title:C.lesson?.title||"Today's Lesson",cardTitle:readableCardTitle(C.lesson?.cardTitle,C.lesson?.title||"Today's Lesson",5),titleHtml:accentLast(C.lesson?.title||"Today's Lesson"),description:C.lesson?.hook||'',meta:[C.lesson?.let,C.lesson?.lesson,C.lesson?.duration],context:'BE THE BEST • COMPETE • LEAD',hero:coverFor('lesson','assets/photos/hero-lesson.jpg'),card:cardMediaFor('lesson',coverFor('lesson','assets/photos/card-lesson-clean.jpg')),badge:'FEATURED',galleryKey:'lesson',artwork:artworkFile('lesson'),fontPref:fontPrefFor('lesson')});
+  if(C.display?.objective!==false) items.push({id:'objective',group:'learn',tag:C.titles?.objectiveLabel||'LESSON OBJECTIVE',callout:"TODAY'S FOCUS",title:C.titles?.objectiveTitle||'KNOW THE STANDARD',cardTitle:readableCardTitle(C.titles?.objectiveCardTitle,'Lesson Objective',4),titleHtml:accentLast(C.titles?.objectiveTitle||'KNOW THE STANDARD'),description:C.lesson?.objective||'',meta:['Objective',C.lesson?.let],context:'LOCK IN. KNOW THE STANDARD.',hero:coverFor('objective','assets/photos/hero-objective.jpg'),card:cardMediaFor('objective',coverFor('objective','assets/photos/card-objective.jpg')),badge:'LEARN',galleryKey:'objective',artwork:artworkFile('objective'),fontPref:fontPrefFor('objective')});
+  if(C.display?.terms!==false && C.keyTerms?.length) items.push({id:'terms',group:'learn',tag:C.titles?.termsLabel||'KEY TERMS',callout:'WORDS TO KNOW',title:C.titles?.termsTitle||'WORDS TO KNOW',titleHtml:accentLast(C.titles?.termsTitle||'WORDS TO KNOW'),description:C.keyTerms.map(x=>x.word).join(' • '),meta:[`${C.keyTerms.length} Terms`],context:'BUILD YOUR VOCABULARY.',hero:coverFor('terms','assets/photos/hero-terms.jpg'),card:cardMediaFor('terms',coverFor('terms','assets/photos/card-terms.jpg')),badge:`${C.keyTerms.length} TERMS`,galleryKey:'terms',artwork:artworkFile('terms'),fontPref:fontPrefFor('terms')});
+  if(C.display?.exit!==false && C.exitQuestions?.length) items.push({id:'exit',group:'learn',tag:C.titles?.exitLabel||'EXIT QUESTIONS',callout:'EXIT TICKET',title:C.titles?.exitTitle||'SHOW WHAT YOU KNOW',titleHtml:accentLast(C.titles?.exitTitle||'SHOW WHAT YOU KNOW'),description:C.exitQuestions[0],meta:[`${C.exitQuestions.length} Questions`],context:'FINISH STRONG.',hero:coverFor('exit','assets/photos/hero-exit.jpg'),card:cardMediaFor('exit',coverFor('exit','assets/photos/card-exit.jpg')),badge:'EXIT',galleryKey:'exit',artwork:artworkFile('exit'),fontPref:fontPrefFor('exit')});
 
   if(C.display?.event!==false && C.operation?.title){
     const basePhoto=C.operation.showPhoto===false?'assets/ui/event-no-photo.svg':(C.operation.photo||'assets/photos/hero-adventure.jpg');
     const photo=coverFor('event',basePhoto);
-    items.push({id:'operation',group:'events',tag:C.titles?.eventLabel||'UPCOMING EVENT',callout:'UPCOMING EVENT',title:C.operation.title,titleHtml:accentLast(C.operation.title),description:C.operation.detail||'',meta:[formatDate(C.operation.date),C.operation.location],context:'STAY READY.',hero:photo,card:photo,badge:`${daysUntil(C.operation.date)} DAYS`,artwork:artworkFile('event')});
+    items.push({id:'operation',group:'events',tag:C.titles?.eventLabel||'UPCOMING EVENT',callout:'UPCOMING EVENT',title:C.operation.title,titleHtml:accentLast(C.operation.title),description:C.operation.detail||'',meta:[formatDate(C.operation.date),C.operation.location],context:'STAY READY.',hero:photo,card:cardMediaFor('event',photo),badge:`${daysUntil(C.operation.date)} DAYS`,artwork:artworkFile('event'),fontPref:fontPrefFor('event')});
   }
 
   if(C.display?.announcements!==false && Array.isArray(C.announcements)){
     C.announcements.filter(a=>a&&(a.headline||a.detail)).forEach((a,i)=>{
       const art=announcementHeroes[i%announcementHeroes.length];
-      items.push({id:`announcement-${i}`,group:'events',tag:C.titles?.announcementLabel||'ANNOUNCEMENT',callout:a.status||'ANNOUNCEMENT',title:a.headline||'Announcement',titleHtml:accentLast(a.headline||'Announcement'),description:a.detail||'',meta:[],context:'STAY INFORMED. STAY READY.',hero:coverFor('announcements',art[0]),card:coverFor('announcements',art[1]),badge:a.status||'UPDATE',galleryKey:'announcements',artwork:artworkFile('announcements')});
+      items.push({id:`announcement-${i}`,group:'events',tag:C.titles?.announcementLabel||'ANNOUNCEMENT',callout:a.status||'ANNOUNCEMENT',title:a.headline||'Announcement',titleHtml:accentLast(a.headline||'Announcement'),description:a.detail||'',meta:[],context:'STAY INFORMED. STAY READY.',hero:coverFor('announcements',art[0]),card:cardMediaFor('announcements',coverFor('announcements',art[1])),badge:a.status||'UPDATE',galleryKey:'announcements',artwork:artworkFile('announcements'),fontPref:fontPrefFor('announcements')});
     });
   }
 
@@ -161,7 +170,7 @@
         showPhoto:s.showPhoto!==false,
         recognitionMedia,
         recognitionMediaSeconds:Math.max(2,Math.min(20,Number(s.mediaSeconds||5))),
-        recognitionType:label,artwork:artworkFile('recognition')
+        recognitionType:label,artwork:artworkFile('recognition'),fontPref:fontPrefFor('recognition')
       });
     });
   }
@@ -186,12 +195,13 @@
         card:photo,
         badge:s.badge||'FEATURE',
         artwork:s.artwork?`assets/icons/${s.artwork}`:'',
+        fontPref:s.fontPref||'auto',
         customSection:true
       });
     });
   }
 
-  if(C.display?.service!==false) items.push({id:'service',group:'spotlight',tag:C.titles?.serviceLabel||'COMMUNITY IMPACT',callout:'CALLAWAY PRIDE',title:C.titles?.serviceTitle||'SERVICE IN ACTION',titleHtml:accentLast(C.titles?.serviceTitle||'SERVICE IN ACTION'),description:'Leadership is measured by the positive impact we create for others.',meta:['Community','Teamwork','Service'],context:'MAKE A DIFFERENCE.',hero:coverFor('service','assets/photos/hero-service.jpg'),card:coverFor('service','assets/photos/card-service.jpg'),badge:'IMPACT',galleryKey:'service',artwork:artworkFile('service')});
+  if(C.display?.service!==false) items.push({id:'service',group:'spotlight',tag:C.titles?.serviceLabel||'COMMUNITY IMPACT',callout:'CALLAWAY PRIDE',title:C.titles?.serviceTitle||'SERVICE IN ACTION',titleHtml:accentLast(C.titles?.serviceTitle||'SERVICE IN ACTION'),description:'Leadership is measured by the positive impact we create for others.',meta:['Community','Teamwork','Service'],context:'MAKE A DIFFERENCE.',hero:coverFor('service','assets/photos/hero-service.jpg'),card:coverFor('service','assets/photos/card-service.jpg'),badge:'IMPACT',galleryKey:'service',artwork:artworkFile('service'),fontPref:fontPrefFor('service')});
 
   const app=document.getElementById('app'), heroBg=document.getElementById('heroBackground'), heroCopy=document.getElementById('heroCopy'), rail=document.getElementById('rail'), rowTitle=document.getElementById('rowTitle'), featureIndex=document.getElementById('featureIndex'), featureTotal=document.getElementById('featureTotal'), pausedBadge=document.getElementById('pausedBadge');
   const heroMediaLayer=document.getElementById('heroMediaLayer');
@@ -217,19 +227,17 @@
   renderEvent(); setInterval(updateCountdown,1000);
 
   function renderRail(){
-    rail.innerHTML=visible.map((item,i)=>`<article class="card cinematic-card ${i===index?'active':''}" data-index="${i}" data-id="${esc(item.id)}" role="option" aria-selected="${i===index}">
-      <div class="cinematic-card-media">
-        <img class="card-photo" src="${esc(item.card)}" alt="">
-        <div class="cinematic-card-overlay"></div>
-      </div>
-      <span class="card-badge">${esc(item.badge||'')}</span>
-      <div class="card-copy">
-        <div class="card-label-row"><span class="card-number">${i+1}.</span><span class="tag">${esc(item.tag)}</span></div>
-        <h3 class="${cardTitleClass(item.cardTitle||item.title)}">${esc(item.cardTitle||item.title)}</h3>
-        <p class="card-description">${esc(String(item.description||item.context||'').slice(0,92))}</p>
-      </div>
-      <span class="card-progress"></span>
-    </article>`).join('');
+    rail.innerHTML=visible.map((item,i)=>{
+      const title=item.cardTitle||item.title;
+      const manual=String(item.fontPref||'auto').toLowerCase();
+      const sizeClass=manual==='auto'?titleLengthClass(title):`card-font-${manual}`;
+      return `<article class="card cinematic-card ${i===index?'active':''}" data-index="${i}" data-id="${esc(item.id)}" role="option" aria-selected="${i===index}">
+        <div class="cinematic-card-media"><img class="card-photo" src="${esc(item.card)}" alt=""><div class="cinematic-card-overlay"></div></div>
+        <span class="card-badge">${esc(item.badge||'')}</span>
+        <div class="card-copy"><div class="card-label-row"><span class="card-number">${i+1}.</span><span class="tag">${esc(item.tag)}</span></div><h3 class="${sizeClass}">${esc(title)}</h3><p class="card-description">${esc(String(item.description||item.context||'').slice(0,92))}</p></div>
+        <span class="card-progress"></span>
+      </article>`;
+    }).join('');
     rail.querySelectorAll('.card').forEach(c=>c.addEventListener('click',()=>show(Number(c.dataset.index),true)));
   }
 
