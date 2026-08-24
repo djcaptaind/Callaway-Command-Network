@@ -8,7 +8,7 @@
     "motto": "Motivate • Lead • Achieve",
     "qrImage": "assets/ui/qr-placeholder.svg",
     "lineupTitle": "Today’s Lineup",
-    "updatedAt": "2026-08-22T02:21:26.144Z"
+    "updatedAt": "2026-08-24T01:30:30.136Z"
   },
   "display": {
     "lesson": true,
@@ -35,7 +35,7 @@
     "serviceTitle": "Service in Action"
   },
   "lesson": {
-    "title": "Update",
+    "title": "WHEN INTEGRITY FAILS Leadership, Ethics & Organizational Accountability",
     "cardTitle": "",
     "subtitle": "Today's Mission",
     "hook": "I know what you did",
@@ -168,6 +168,19 @@
       "coverIndex": 0,
       "media": []
     }
+  },
+  "artwork": {
+    "lesson": "lesson-board.svg",
+    "objective": "focus-target.svg",
+    "terms": "notebook-pen.svg",
+    "exit": "clipboard-check.svg",
+    "event": "mountain-event.svg",
+    "announcements": "bullhorn-siren.svg",
+    "recognition": "medal-recognition.svg",
+    "service": "community-hands.svg",
+    "challenge": "stopwatch-challenge.svg",
+    "promotion": "promotion-chevron.svg",
+    "academic": "academic-cap.svg"
   },
   "spotlight": {
     "name": "",
