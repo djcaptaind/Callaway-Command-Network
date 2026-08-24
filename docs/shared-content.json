@@ -8,7 +8,7 @@
     "motto": "Motivate • Lead • Achieve",
     "qrImage": "assets/ui/qr-placeholder.svg",
     "lineupTitle": "Today’s Lineup",
-    "updatedAt": "2026-08-24T03:11:40.974Z"
+    "updatedAt": "2026-08-24T03:38:41.571Z"
   },
   "display": {
     "lesson": true,
@@ -217,6 +217,16 @@
     "challenge": "stopwatch-challenge.svg",
     "promotion": "promotion-chevron.svg",
     "academic": "academic-cap.svg"
+  },
+  "fontSizes": {
+    "lesson": "auto",
+    "objective": "medium",
+    "terms": "auto",
+    "exit": "auto",
+    "event": "auto",
+    "announcements": "auto",
+    "recognition": "auto",
+    "service": "auto"
   },
   "spotlight": {
     "name": "",
