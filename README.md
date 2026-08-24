@@ -1,3 +1,13 @@
+CALLAWAY COMMAND NETWORK V20.3.2 — CINEMATIC CARD ART + RUNTIME MEDIA MERGE
+
+MERGED
+- V20.3.1 repaired hero/tabs/media runtime preserved.
+- Working Manage Media photo/video/YouTube controls preserved.
+- V20.3 photo-first cinematic cards restored.
+- Five cards remain visible in one row; extras scroll horizontally.
+- Integrated Recognition portraits remain intact.
+- Custom Sections, Parent View, Recognition Center, and GitHub publishing remain intact.
+
 CALLAWAY COMMAND NETWORK V20.3.1 — RUNTIME + UNIVERSAL MEDIA FIX
 
 FIXED
