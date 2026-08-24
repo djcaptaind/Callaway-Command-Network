@@ -8,7 +8,7 @@
     "motto": "Motivate • Lead • Achieve",
     "qrImage": "assets/ui/qr-placeholder.svg",
     "lineupTitle": "Today’s Lineup",
-    "updatedAt": "2026-08-24T02:41:11.894Z"
+    "updatedAt": "2026-08-24T02:50:54.003Z"
   },
   "display": {
     "lesson": true,
@@ -36,15 +36,15 @@
   },
   "lesson": {
     "title": "When Integrity Fails Leadership, Ethics & Organizational Accountability",
-    "cardTitle": "",
+    "cardTitle": "When Integrity Fails",
     "subtitle": "Today's Mission",
     "hook": "Cadets examine a real public-corruption case involving the Baltimore City Detention Center to determine how individual ethical failures, weakened professional boundaries, silence, and poor accountability can grow into an organizational crisis",
     "let": "LET 3 and 4",
     "lesson": "Lesson 3",
     "period": "",
-    "duration": "45 min",
-    "objective": "By the end of the lesson, cadets will be able to:\n\n",
-    "essentialQuestion": ""
+    "duration": "80 min",
+    "objective": "By the end of the lesson, cadets will be able to: \n1.  Analyze ethical failures in a real-world organization.\n2. Identify at least three points where standards, supervision, or professional boundaries failed.\n3. Apply Army Values to leadership decisions.\n4. Select relevant Army Values and defend why they matter in the case.\n5. Evaluate the consequences of silence and compromised loyalty.\n6. Explain how inaction can turn individual misconduct into an organizational problem.\n",
+    "essentialQuestion": "How can one person’s decision to compromise their values affect an entire organization?"
   },
   "keyTerms": [
     {
