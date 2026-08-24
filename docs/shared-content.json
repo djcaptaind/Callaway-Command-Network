@@ -8,7 +8,7 @@
     "motto": "Motivate • Lead • Achieve",
     "qrImage": "assets/ui/qr-placeholder.svg",
     "lineupTitle": "Today’s Lineup",
-    "updatedAt": "2026-08-24T02:59:04.024Z"
+    "updatedAt": "2026-08-24T03:07:11.053Z"
   },
   "display": {
     "lesson": true,
@@ -52,8 +52,20 @@
       "definition": "Accepting responsibility for your decisions, actions, and their consequences."
     },
     {
-      "word": "Professional Communication",
-      "definition": "Presenting information clearly, respectfully, confidently, and appropriately for the audience."
+      "word": "Accountability",
+      "definition": "Accepting responsibility for actions and outcomes."
+    },
+    {
+      "word": "Professional boundaries",
+      "definition": "Limits that preserve appropriate roles and trust."
+    },
+    {
+      "word": "Corruption",
+      "definition": "Abuse of entrusted authority for improper benefit."
+    },
+    {
+      "word": "Ethical decision-making",
+      "definition": "Choosing actions based on values, standards, consequences, and duty."
     }
   ],
   "exitQuestions": [
@@ -149,7 +161,7 @@
       ]
     },
     "terms": {
-      "enabled": false,
+      "enabled": true,
       "seconds": 5,
       "coverIndex": 0,
       "media": []
