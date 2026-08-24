@@ -1,3 +1,157 @@
+CALLAWAY COMMAND NETWORK V20.3.1 — RUNTIME + UNIVERSAL MEDIA FIX
+
+FIXED
+- Main feature window no longer stays blank.
+- Home / Today’s Lesson / Learn / Events / Recognition tabs now render in the main window.
+- Restored the missing hero photo/video/YouTube runtime controller.
+- Restored the missing Universal Media Gallery editor.
+- Manage Media supports multiple photos, MP4/WebM/OGG videos, and YouTube links again.
+- Restored Custom Section builder runtime helpers that were also missing.
+- Media can be set as cover, reordered, removed, enabled/disabled, and timed.
+- Recognition portrait integration and V20.3 cinematic cards remain intact.
+- GitHub publishing, Parent View, and custom sections remain intact.
+
+CALLAWAY COMMAND NETWORK V20.3 — CINEMATIC CARD ART
+
+CARD VISUAL UPGRADE
+- Rebuilt Today’s Lineup cards to match the photo-first reference style.
+- Section artwork/photo fills the upper 55% of each card edge-to-edge.
+- Dark cinematic gradient blends the photograph into a dedicated lower text area.
+- Removed the floating icon-badge treatment from lineup cards.
+- Card number + section label + title + short description now use a clean broadcast hierarchy.
+- Recognition cards preserve the integrated cadet portrait treatment.
+- Five cards remain visible in one row; additional cards stay in the horizontal carousel.
+- Existing editor card-image/media controls remain the source for replacing each section’s artwork/photo.
+- Existing photos, videos, custom sections, Recognition Center, Parent View, and GitHub publishing are preserved.
+
+CALLAWAY COMMAND NETWORK V20.2.1 — ARTWORK RENDER FIX
+
+FIXED
+- The Broadcast Artwork Library was present in V20.2 but the card-rendering template never inserted the artwork.
+- Today’s Lesson now visibly shows Lesson Board artwork.
+- Lesson Objective shows Target / Focus artwork.
+- Words to Know shows Notebook + Pen artwork.
+- Exit Questions shows Clipboard / Checklist artwork.
+- Upcoming Event shows Mountain / Adventure artwork.
+- Announcements show Bullhorn / Siren artwork.
+- Recognition shows Medal / Recognition artwork.
+- Community Impact shows Helping Hands artwork.
+- Older shared-content.json files now receive built-in artwork defaults automatically, so you do not have to republish content just to see the icons.
+- Artwork appears in a clean broadcast treatment above the card title while the existing card photograph remains in the background.
+
+PRESERVED
+- V20.2 typography
+- Single-row lineup
+- Integrated recognition portraits
+- Universal photos/videos
+- Recognition Center
+- Custom sections
+- Parent View
+- GitHub publishing
+
+CALLAWAY COMMAND NETWORK V20.2 — CLEAN BROADCAST TYPOGRAPHY
+
+TYPOGRAPHY UPGRADE
+- Replaces the overly compressed/poster-like text treatment with a cleaner broadcast hierarchy.
+- Main feature titles now use a cleaner condensed bold style.
+- Recognition names stay bold and cinematic but are easier to read.
+- Event titles/countdown retain impact without looking squeezed.
+- Lineup card titles are smaller, cleaner, and more readable.
+- Supporting descriptions use a normal sans-serif for classroom readability.
+- Navigation and labels use a clean condensed sans-serif.
+- Objective, Key Terms, and Exit Question content prioritizes readability over oversized headings.
+
+PRESERVED FROM V20.1
+- Broadcast Icon Library
+- Real Focus / Integrity / Teamwork / Excellence artwork
+- Single-row, five-visible-card lineup
+- Integrated recognition portraits
+- Multiple photos/videos
+- Recognition Center
+- Custom sections
+- Parent View
+- Hide/show controls
+- One-click GitHub publishing
+
+CALLAWAY COMMAND NETWORK V20.1 — BROADCAST ICON LIBRARY + SINGLE-ROW LINEUP
+
+NEW IN V20.1
+- Fixed the Today’s Lineup overflow bug.
+- The lineup is now ALWAYS one row.
+- Exactly five cards are visible at once.
+- Additional active sections remain in a horizontal carousel and never drop into the footer.
+- Added a unified CCN orange/white SVG artwork library.
+- Replaced the old Focus / Integrity / Teamwork / Excellence symbols with professional artwork.
+- Teamwork now uses a real 3-person teamwork illustration instead of three dots.
+- Words to Know can use Notebook + Pen artwork.
+- Exit Questions can use Clipboard / Checklist artwork.
+- Announcements can use Bullhorn / Siren artwork.
+- Upcoming Event can use Adventure / Mountain artwork.
+- Recognition can use Medal artwork.
+- Cadet Challenge can use Stopwatch artwork.
+- Community Service can use Helping Hands artwork.
+- Promotion and Academic artwork are included.
+- Content Studio includes an Artwork / Icon Library selector for major sections.
+- Custom Sections can choose artwork too.
+- All V20 media, recognition portraits, photos/videos, custom sections, Parent View, and GitHub publishing remain intact.
+
+CALLAWAY COMMAND NETWORK V20 — BROADCAST HOME
+
+VISUAL DIRECTION
+- Uses the approved #3 architecture as the foundation.
+- Uses #1's cleaner CCN header and information-rich card labeling.
+- Large cinematic feature on the left.
+- Fixed Upcoming Event / countdown panel on the right.
+- Clean Focus / Integrity / Teamwork / Excellence bar.
+- Five equal Today's Lineup cards with number, section label, title, description, image, and badge.
+- Compact Daily Brief / Motto / Quick Links area.
+- Full-width announcement ticker.
+
+PRESERVED
+- V19/V18 editor
+- Universal photos and videos
+- Recognition Center
+- Cadet / staff / congratulations / special recognition types
+- Custom sections
+- Parent View
+- Hide/show controls
+- Event photo/media
+- One-click GitHub publishing
+
+OPEN
+- docs/index.html — TV display
+- instructor/editor.html — Content Studio
+
+CALLAWAY COMMAND NETWORK V19 — CINEMATIC DASHBOARD
+
+DESIGN REBUILD
+- Rebuilt the TV dashboard around the approved compact CCN mockup.
+- Balanced two-panel hero: featured content/recognition left, upcoming event right.
+- Recognition portrait is integrated into the hero instead of floating over text.
+- Five equal Today’s Lineup cards for fast classroom-TV scanning.
+- Cleaner Focus / Integrity / Teamwork / Excellence rail.
+- Compact Daily Brief / Motto / Quick Links footer.
+- Existing V18.9.x editor, custom sections, multiple photos, videos, Recognition Center,
+  hide/show controls, event editing, lineup data, and GitHub publishing are preserved.
+- Content remains editor-driven; names/events are NOT hard-coded into the V19 design.
+
+OPEN
+- docs/index.html = display
+- instructor/editor.html = editor
+
+CALLAWAY COMMAND NETWORK V18.9.3 — RECOGNITION LAYOUT FIX
+
+FIXED
+- Recognition headline can no longer run underneath the portrait/media panel.
+- Recognition screens now use a protected left text column and right portrait/media column.
+- Long congratulations/staff/special-recognition headlines automatically reduce in size.
+- Person/group name can display separately in large orange type.
+- Detail/role text is larger.
+- Recognition quote/message remains readable without crowding the headline.
+- Portrait remains approximately one-third of the feature area.
+- Recognition lineup cards remain readable.
+- All V18.9.2 GitHub publishing, universal media, Recognition Center, and custom-section features remain included.
+
 CALLAWAY COMMAND NETWORK V18.9.2 — GITHUB PUBLISH FIX
 
 FIXED

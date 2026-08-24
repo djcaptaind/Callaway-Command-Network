@@ -100,5 +100,19 @@ window.CCN_STREAMING_DEFAULTS = {
     spotlights: { enabled: false, seconds: 5, coverIndex: 0, media: [] },
     service: { enabled: false, seconds: 5, coverIndex: 0, media: [] }
   }
+,
+  artwork: {
+    lesson: "lesson-board.svg",
+    objective: "focus-target.svg",
+    terms: "notebook-pen.svg",
+    exit: "clipboard-check.svg",
+    event: "mountain-event.svg",
+    announcements: "bullhorn-siren.svg",
+    recognition: "medal-recognition.svg",
+    service: "community-hands.svg",
+    challenge: "stopwatch-challenge.svg",
+    promotion: "promotion-chevron.svg",
+    academic: "academic-cap.svg"
+  }
 
 };

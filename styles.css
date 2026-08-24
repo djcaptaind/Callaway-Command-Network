@@ -556,3 +556,1285 @@ linear-gradient(0deg,rgba(2,7,13,.65),transparent 48%)}
 }
 .hero-overlay{z-index:2}
 .hero-content{z-index:3}
+
+
+/* ============================================================
+   V18.9.3 — RECOGNITION LAYOUT FIX
+   Protected text/media columns + adaptive recognition typography.
+   ============================================================ */
+.hero-content.recognition-mode{
+  left:3vw;
+  top:7%;
+  bottom:7%;
+  width:54%;
+  justify-content:center;
+  padding-right:1vw;
+}
+.hero-content.recognition-mode .callout{
+  margin-bottom:.55vh;
+}
+.hero-content.recognition-mode h1{
+  margin:.45vh 0 .65vh;
+  line-height:.88;
+  max-width:100%;
+  text-wrap:balance;
+}
+.hero-content.recognition-mode .recognition-title-short{font-size:clamp(48px,4.8vw,82px)}
+.hero-content.recognition-mode .recognition-title-long{font-size:clamp(39px,3.85vw,66px)}
+.hero-content.recognition-mode .recognition-title-xlong{font-size:clamp(31px,3.1vw,53px)}
+.hero-content.recognition-mode .recognition-title-xxlong{font-size:clamp(25px,2.55vw,44px)}
+.hero-content.recognition-mode .recognition-person{
+  font-family:Impact,"Arial Black",sans-serif;
+  font-size:clamp(25px,2.35vw,40px);
+  line-height:.95;
+  color:var(--orange);
+  text-transform:uppercase;
+  margin:.15vh 0 .65vh;
+}
+.hero-content.recognition-mode .meta{
+  margin:.2vh 0 .55vh;
+}
+.hero-content.recognition-mode .meta span{
+  font-size:clamp(9px,.72vw,12px);
+}
+.hero-content.recognition-mode .recognition-detail{
+  max-width:100%;
+  font-size:clamp(17px,1.2vw,21px);
+  line-height:1.2;
+  margin:.35vh 0;
+}
+.hero-content.recognition-mode .recognition-quote{
+  font-size:clamp(13px,.92vw,16px);
+  line-height:1.2;
+  max-width:95%;
+  color:#ffd19b;
+}
+
+/* Keep portrait/media in its own protected column. */
+.spotlight-photo-panel{
+  top:4.5%;
+  right:2.6%;
+  bottom:4.5%;
+  width:34%;
+  min-width:290px;
+}
+.spotlight-photo-panel img{
+  object-position:center 16%;
+}
+.spotlight-photo-caption{
+  left:1.05vw;
+  right:1vw;
+  bottom:1.1vh;
+}
+.spotlight-photo-caption strong{
+  font-size:clamp(9px,.7vw,12px);
+}
+.spotlight-photo-caption span{
+  font-size:clamp(19px,1.65vw,28px);
+  line-height:.95;
+}
+
+/* Recognition cards remain bold but readable. */
+.card[data-id^="spotlight-"] h3{
+  font-size:clamp(16px,1.18vw,21px)!important;
+  line-height:.95;
+  max-height:2.9em;
+}
+.card[data-id^="spotlight-"] .tag{
+  color:#ff9a42;
+}
+
+/* Short Edge viewport */
+@media (max-height:950px) and (min-width:1200px){
+  .hero-content.recognition-mode{
+    top:4%;
+    bottom:4%;
+    width:55%;
+  }
+  .spotlight-photo-panel{
+    top:3%;
+    bottom:3%;
+    width:33%;
+  }
+  .hero-content.recognition-mode .recognition-title-short{font-size:clamp(43px,4.2vw,72px)}
+  .hero-content.recognition-mode .recognition-title-long{font-size:clamp(35px,3.45vw,59px)}
+  .hero-content.recognition-mode .recognition-title-xlong{font-size:clamp(29px,2.85vw,49px)}
+  .hero-content.recognition-mode .recognition-title-xxlong{font-size:clamp(24px,2.3vw,39px)}
+}
+
+
+/* ============================================================
+   CCN V19 — CINEMATIC DASHBOARD
+   Visual rebuild based on approved compact broadcast mockup.
+   Keeps V18.9.x editor/data/media/publishing engine intact.
+   ============================================================ */
+
+:root{
+  --v19-orange:#ff6a00;
+  --v19-blue:#071a2d;
+  --v19-blue2:#0b2744;
+  --v19-line:#29435a;
+  --v19-text:#f5f7fa;
+  --v19-muted:#c6ced7;
+}
+body{
+  background:
+    radial-gradient(circle at 80% 0%,rgba(19,67,104,.18),transparent 30%),
+    linear-gradient(180deg,#020a12,#06111d 62%,#020911);
+}
+.shell{max-width:none}
+.topbar{
+  height:82px;
+  padding:0 2vw;
+  background:rgba(2,10,18,.97);
+  border-bottom:1px solid #263747;
+  box-shadow:0 8px 30px rgba(0,0,0,.28);
+}
+.brand{gap:12px}
+.brand img{width:64px;height:64px;object-fit:contain}
+.brand .network-mark{font-size:42px;line-height:.8}
+.brand .network-name{font-size:13px;line-height:1.02;max-width:95px}
+.nav{height:100%;gap:2px}
+.nav button{
+  border:0;border-radius:0;background:transparent;
+  padding:0 17px;height:100%;
+  font-size:14px;letter-spacing:.03em;
+  border-bottom:3px solid transparent;
+}
+.nav button.active{
+  color:var(--v19-orange);
+  background:transparent;
+  border-bottom-color:var(--v19-orange);
+}
+.live-clock{transform:scale(.88);transform-origin:right center}
+
+/* Hero becomes a balanced two-panel broadcast grid */
+.hero{
+  margin:0 2vw;
+  height:300px;
+  min-height:300px;
+  border:0;
+  background:#06111d;
+  display:grid;
+  grid-template-columns:46% 54%;
+  overflow:hidden;
+}
+.hero-main{
+  position:relative!important;
+  inset:auto!important;
+  width:auto!important;
+  height:300px!important;
+  min-height:300px;
+  border-right:1px solid #23384c;
+  overflow:hidden;
+  background:#06111d;
+}
+.hero-main::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(2,10,18,.98) 0%,rgba(2,10,18,.82) 45%,rgba(2,10,18,.15) 78%,rgba(2,10,18,0) 100%);
+  pointer-events:none;z-index:1;
+}
+.hero-main .hero-bg{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center;
+}
+.hero-content,
+.hero-content.recognition-mode{
+  z-index:3!important;
+  left:0!important;top:0!important;bottom:auto!important;
+  width:64%!important;height:100%;
+  padding:28px 0 22px 0!important;
+  margin-left:0!important;
+  justify-content:center;
+  transform:none!important;
+}
+.hero-content > *{margin-left:0}
+.hero-content .callout{
+  color:var(--v19-orange);
+  background:transparent;
+  padding:0;
+  font-size:15px;
+  letter-spacing:.05em;
+}
+.hero-content h1,
+.hero-content.recognition-mode h1{
+  font-family:Impact,"Arial Narrow",sans-serif;
+  font-size:clamp(42px,4vw,66px)!important;
+  line-height:.88!important;
+  letter-spacing:.01em;
+  margin:10px 0 8px!important;
+  text-wrap:balance;
+}
+.hero-content h1 em{color:var(--v19-orange)}
+.hero-content .synopsis,
+.hero-content.recognition-mode .recognition-detail{
+  font-size:17px!important;line-height:1.15!important;
+  max-width:95%;color:#f0f3f6;
+}
+.hero-content .meta{margin-top:5px}
+.hero-content .meta span{
+  border:1px solid #405469;background:rgba(3,15,27,.65);
+  padding:4px 9px;font-size:11px;
+}
+.hero-content.recognition-mode .recognition-person{
+  font-size:18px!important;
+  letter-spacing:.22em;
+  margin-top:12px;
+}
+.hero-content.recognition-mode .recognition-quote{display:none}
+
+/* Recognition portrait integrates into the left hero instead of floating card */
+.spotlight-photo-panel{
+  z-index:2!important;
+  top:0!important;right:0!important;bottom:0!important;
+  width:47%!important;min-width:0!important;height:100%!important;
+  border:0!important;background:transparent!important;
+  clip-path:none!important;box-shadow:none!important;
+}
+.spotlight-photo-panel img{
+  width:100%;height:100%;object-fit:cover;object-position:center 18%;
+}
+.spotlight-photo-panel::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,#06111d 0%,rgba(6,17,29,.2) 35%,rgba(6,17,29,0) 65%);
+}
+.spotlight-photo-caption{display:none!important}
+
+/* Right event panel */
+.operation-panel{
+  position:relative!important;
+  inset:auto!important;
+  width:auto!important;height:300px!important;
+  border:0!important;
+  background:#081522;
+  overflow:hidden;
+}
+.operation-panel .operation-photo{height:100%;object-fit:cover}
+.operation-panel::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(3,13,23,.96),rgba(3,13,23,.70) 47%,rgba(3,13,23,.12));
+  pointer-events:none;
+}
+.operation-copy{z-index:2;padding:24px 28px!important}
+.operation-copy .eyebrow{font-size:15px;color:var(--v19-orange)}
+.operation-copy h2{font-size:38px!important;line-height:.95}
+.countdown{gap:8px!important}
+.countdown .unit{
+  min-width:60px!important;padding:8px 8px!important;
+  background:#0b2238!important;border:1px solid #31506b!important;
+}
+.countdown .num{font-size:35px!important}
+.operation-copy .event-meta{font-size:15px!important}
+.operation-copy .event-button{padding:10px 16px!important}
+
+/* Values bar */
+.values-strip{
+  margin:0 2vw;height:72px;
+  background:#071625;border:1px solid #2a3e51;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  box-shadow:0 7px 18px rgba(0,0,0,.18);
+}
+.value-item{
+  min-width:0;padding:9px 20px;
+  border-right:1px solid #314558;
+}
+.value-item:last-child{border-right:0}
+.value-item .value-title{font-size:18px}
+.value-item .value-sub{font-size:10px}
+
+/* Lineup: five equal information cards, less carousel-like */
+.lineup-section{padding:14px 2vw 8px!important}
+.lineup-header{margin-bottom:8px!important}
+.lineup-header h2{font-size:22px!important;letter-spacing:.04em}
+.lineup-track{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:10px!important;
+  transform:none!important;
+  overflow:visible!important;
+}
+.card{
+  width:auto!important;min-width:0!important;height:180px!important;
+  border:1px solid #304354!important;
+  background:linear-gradient(180deg,#0a1826,#07121d)!important;
+  border-radius:4px!important;
+  padding:16px!important;
+  overflow:hidden;
+  box-shadow:none!important;
+}
+.card.active{
+  border-left:4px solid var(--v19-orange)!important;
+  border-bottom-color:#304354!important;
+}
+.card::before{display:none!important}
+.card .card-bg{opacity:.13!important}
+.card .card-overlay{background:linear-gradient(180deg,rgba(5,14,23,.25),rgba(5,14,23,.96))!important}
+.card .card-content{padding:14px!important}
+.card .tag{font-size:11px!important;color:#d7dee5!important}
+.card h3,.card[data-id^="spotlight-"] h3{
+  font-family:Impact,"Arial Narrow",sans-serif!important;
+  font-size:20px!important;line-height:1!important;
+  max-height:3em!important;
+}
+.card .badge{font-size:9px!important}
+.card .card-desc{
+  display:block!important;
+  color:#d3dae1;font-size:12px;line-height:1.15;
+  margin-top:7px;max-height:3.45em;overflow:hidden;
+}
+
+/* Bottom information rail */
+.bottom-zone{
+  margin:0 2vw;
+  min-height:74px;
+  display:grid!important;
+  grid-template-columns:29% 36% 35%;
+  align-items:stretch;
+  border-top:1px solid #25394a;
+}
+.daily-brief,.motto,.quick-links{
+  min-height:74px!important;margin:0!important;
+  border:0!important;background:#06111d!important;
+}
+.motto{
+  border-left:1px solid #2a3d4d!important;
+  border-right:1px solid #2a3d4d!important;
+}
+.announcement-bar{height:42px!important}
+
+/* Compact TV fit */
+@media (max-height:950px) and (min-width:1200px){
+  .topbar{height:72px}
+  .brand img{width:55px;height:55px}
+  .brand .network-mark{font-size:36px}
+  .hero,.hero-main,.operation-panel{height:282px!important;min-height:282px!important}
+  .hero-content,.hero-content.recognition-mode{padding-top:20px!important;padding-bottom:18px!important}
+  .hero-content h1,.hero-content.recognition-mode h1{font-size:clamp(38px,3.7vw,60px)!important}
+  .values-strip{height:62px}
+  .lineup-section{padding-top:10px!important}
+  .card{height:166px!important}
+  .bottom-zone,.daily-brief,.motto,.quick-links{min-height:66px!important}
+}
+
+
+/* ============================================================
+   CCN V20 — BROADCAST HOME
+   #3 cinematic architecture + #1 clean header/card language.
+   55-inch TV / 16:9 first.
+   ============================================================ */
+
+:root{
+  --ccn-orange:#ff6900;
+  --ccn-orange2:#ff8a22;
+  --ccn-navy:#020a13;
+  --ccn-panel:#071522;
+  --ccn-panel2:#0a1c2d;
+  --ccn-line:#294055;
+  --ccn-text:#f7f8fa;
+  --ccn-muted:#c7d0d9;
+}
+
+/* kill previous decorative layers for a cleaner broadcast look */
+.energy-grid,.energy-glow,.spark-field{display:none!important}
+.app{
+  background:
+    radial-gradient(circle at 53% 8%,rgba(14,48,78,.18),transparent 33%),
+    linear-gradient(180deg,#020912 0%,#06111c 65%,#020911 100%)!important;
+}
+
+/* HEADER */
+.topbar{
+  height:10.6vh!important;
+  min-height:84px!important;
+  padding:0 2vw!important;
+  display:grid!important;
+  grid-template-columns:31% 47% 22%!important;
+  align-items:center!important;
+  border-bottom:1px solid #26394b!important;
+  background:rgba(2,9,17,.98)!important;
+  box-shadow:0 7px 24px rgba(0,0,0,.28)!important;
+}
+.brand-lockup{gap:.9vw!important}
+.brand-logo{
+  width:5.4vw!important;
+  max-width:82px!important;
+  min-width:66px!important;
+  filter:drop-shadow(0 0 8px rgba(255,105,0,.12))!important;
+}
+.brand-copy{grid-template-columns:auto auto!important;grid-template-rows:auto auto!important;column-gap:12px!important;align-items:center!important}
+.brand-copy strong{
+  grid-row:1/3!important;
+  font-family:Impact,"Arial Black",sans-serif!important;
+  font-size:clamp(40px,4vw,65px)!important;
+  color:#f4f5f7!important;
+  -webkit-text-fill-color:#f4f5f7!important;
+  background:none!important;
+  text-shadow:none!important;
+  letter-spacing:1px!important;
+}
+.brand-copy span{
+  color:#fff!important;
+  font-size:clamp(10px,.82vw,14px)!important;
+  line-height:1!important;
+  letter-spacing:.5px!important;
+}
+.brand-copy small{
+  display:block!important;
+  color:var(--ccn-orange2)!important;
+  font-size:clamp(7px,.55vw,9px)!important;
+  letter-spacing:1px!important;
+  margin-top:0!important;
+}
+.top-nav{
+  height:100%!important;
+  align-self:stretch!important;
+  display:flex!important;
+  justify-content:center!important;
+  align-items:stretch!important;
+  border:0!important;
+  clip-path:none!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.nav-btn{
+  min-width:auto!important;
+  height:100%!important;
+  padding:0 1.05vw!important;
+  border:0!important;
+  border-bottom:3px solid transparent!important;
+  background:transparent!important;
+  color:#f0f2f5!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.nav-btn b{
+  font-size:clamp(10px,.82vw,14px)!important;
+  letter-spacing:.15px!important;
+}
+.nav-btn.active,.nav-btn:hover{
+  background:transparent!important;
+  color:var(--ccn-orange2)!important;
+  border-bottom-color:var(--ccn-orange)!important;
+  box-shadow:0 10px 20px -15px var(--ccn-orange)!important;
+}
+.status-block{align-self:center!important}
+.status-line time{font-size:clamp(32px,3vw,50px)!important}
+.status-sub{font-size:clamp(8px,.64vw,11px)!important}
+
+/* MAIN HERO: #3 architecture */
+.hero-zone{
+  height:35.2vh!important;
+  min-height:300px!important;
+  display:grid!important;
+  grid-template-columns:63% 37%!important;
+  gap:.9vw!important;
+  padding:1.2vh 2vw .9vh!important;
+}
+.feature-card,.event-card{
+  clip-path:none!important;
+  border-radius:4px!important;
+  overflow:hidden!important;
+  background:#06121e!important;
+  border:1px solid #263f55!important;
+  box-shadow:0 14px 32px rgba(0,0,0,.32)!important;
+}
+.feature-card::after{display:none!important}
+.hero-overlay{
+  background:
+    linear-gradient(90deg,rgba(2,9,17,.98) 0%,rgba(2,9,17,.86) 35%,rgba(2,9,17,.24) 67%,rgba(2,9,17,.03) 100%),
+    linear-gradient(0deg,rgba(2,9,17,.45),transparent 55%)!important;
+}
+.hero-content{
+  left:2.4vw!important;
+  top:7%!important;
+  bottom:7%!important;
+  width:55%!important;
+  justify-content:center!important;
+}
+.hero-content .callout{
+  background:transparent!important;
+  transform:none!important;
+  padding:0 0 .45vh!important;
+  color:var(--ccn-orange2)!important;
+  box-shadow:none!important;
+  border-bottom:2px solid var(--ccn-orange)!important;
+  font-size:clamp(10px,.78vw,13px)!important;
+}
+.hero-content h1{
+  margin:.9vh 0 .7vh!important;
+  line-height:.88!important;
+  letter-spacing:-.3px!important;
+  text-shadow:0 4px 16px rgba(0,0,0,.5)!important;
+}
+.hero-content .synopsis{
+  font-size:clamp(14px,1.03vw,18px)!important;
+  line-height:1.22!important;
+}
+.hero-content .context-note{
+  color:#f6b877!important;
+  font-size:clamp(10px,.72vw,12px)!important;
+}
+
+/* integrated recognition portrait */
+.spotlight-photo-panel{
+  top:0!important;right:0!important;bottom:0!important;
+  width:50%!important;min-width:0!important;
+  border:0!important;clip-path:none!important;box-shadow:none!important;
+  background:transparent!important;
+}
+.spotlight-photo-panel img{object-position:center 16%!important}
+.spotlight-photo-panel::after{
+  background:linear-gradient(90deg,#06121e 0%,rgba(6,18,30,.32) 30%,transparent 62%)!important;
+}
+.spotlight-photo-caption{display:none!important}
+.hero-content.recognition-mode{
+  width:52%!important;
+  left:2.4vw!important;
+}
+.hero-content.recognition-mode .recognition-person{
+  color:var(--ccn-orange)!important;
+  font-size:clamp(21px,1.7vw,29px)!important;
+  letter-spacing:.12em!important;
+}
+
+/* EVENT PANEL */
+.event-card{border-color:#30475c!important}
+.event-overlay{
+  background:
+    linear-gradient(90deg,rgba(3,11,20,.95),rgba(3,11,20,.72) 49%,rgba(3,11,20,.16)),
+    linear-gradient(0deg,rgba(2,8,14,.48),transparent)!important;
+}
+.event-content{inset:6% 5.5% 6% 6%!important}
+.event-kicker{
+  font-size:clamp(10px,.82vw,14px)!important;
+  color:var(--ccn-orange2)!important;
+}
+.countdown{margin:1.1vh 0 1.2vh!important;gap:.5vw!important}
+.count-box{
+  min-width:56px!important;
+  width:4.9vw!important;
+  padding:.75vh .25vw!important;
+  border-radius:4px!important;
+  background:rgba(8,34,59,.94)!important;
+  border-color:#345677!important;
+}
+.count-box b{font-size:clamp(27px,2.5vw,43px)!important}
+.event-content h2{
+  font-size:clamp(31px,2.8vw,48px)!important;
+  line-height:.94!important;
+  margin:.55vh 0 .65vh!important;
+}
+.event-meta{font-size:clamp(11px,.82vw,14px)!important}
+.event-button{
+  margin-top:1vh!important;
+  background:var(--ccn-orange)!important;
+  color:white!important;
+  border:0!important;
+  border-radius:4px!important;
+  padding:.8vh 1.25vw!important;
+}
+
+/* VALUES */
+.values-strip{
+  height:8.3vh!important;
+  min-height:62px!important;
+  margin:0 2vw!important;
+  border-radius:4px!important;
+  clip-path:none!important;
+  border:1px solid #294055!important;
+  background:#071522!important;
+  box-shadow:none!important;
+}
+.values-strip>div{
+  grid-template-columns:auto 1fr!important;
+  grid-template-rows:auto auto!important;
+  padding:.8vh 1.6vw!important;
+  border-right:1px solid #304457!important;
+  align-items:center!important;
+}
+.value-icon{
+  grid-row:1/3!important;
+  font-size:clamp(25px,2vw,34px)!important;
+  color:var(--ccn-orange)!important;
+}
+.values-strip strong{
+  font-size:clamp(13px,1.04vw,18px)!important;
+  color:#fff!important;
+  font-style:normal!important;
+}
+.values-strip small{
+  font-size:clamp(8px,.62vw,11px)!important;
+  color:#d0d7df!important;
+}
+
+/* LINEUP: five information-rich cards */
+.lineup-zone{
+  height:27.2vh!important;
+  padding:.9vh 2vw 0!important;
+}
+.lineup-head{
+  height:4.3vh!important;
+  align-items:center!important;
+  border-left:4px solid var(--ccn-orange)!important;
+  padding-left:.8vw!important;
+}
+.lineup-head>div:first-child>span{display:none!important}
+.lineup-head h2{
+  font-size:clamp(19px,1.45vw,25px)!important;
+  text-transform:uppercase!important;
+  letter-spacing:.4px!important;
+}
+.rail{
+  height:21.8vh!important;
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:.75vw!important;
+  overflow:visible!important;
+  padding:.45vh 0 .8vh!important;
+}
+.card{
+  min-width:0!important;
+  width:auto!important;
+  height:20vh!important;
+  border-radius:4px!important;
+  clip-path:none!important;
+  border:1px solid #31465a!important;
+  background:#071522!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+.card.active{
+  transform:none!important;
+  border-color:var(--ccn-orange)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,105,0,.25)!important;
+}
+.card img{
+  height:47%!important;
+  filter:brightness(.76) saturate(.95)!important;
+}
+.card-shade,.card::after{
+  position:absolute;inset:0!important;
+  background:linear-gradient(180deg,transparent 27%,rgba(4,13,22,.24) 42%,#071522 61%)!important;
+  z-index:1!important;
+}
+.card-copy{
+  z-index:3!important;
+  left:.85vw!important;right:.75vw!important;bottom:1vh!important;
+}
+.card-label-row{display:flex;align-items:center;gap:.5vw;margin-bottom:.35vh}
+.card-number{
+  color:var(--ccn-orange)!important;
+  font-family:Impact,"Arial Black",sans-serif!important;
+  font-size:clamp(17px,1.2vw,22px)!important;
+}
+.card .tag{
+  color:#d5dce4!important;
+  font-size:clamp(8px,.58vw,10px)!important;
+}
+.card h3,.card h3.card-title-long,.card h3.card-title-xlong,.card[data-id^="spotlight-"] h3{
+  font-size:clamp(15px,1.03vw,19px)!important;
+  line-height:.98!important;
+  max-height:2em!important;
+  color:#fff!important;
+}
+.card-description{
+  margin:.55vh 0 0;
+  color:#c9d2dc;
+  font-size:clamp(9px,.62vw,11px);
+  line-height:1.15;
+  max-height:2.35em;
+  overflow:hidden;
+}
+.card-badge{
+  top:.65vh!important;right:.55vw!important;
+  border-radius:4px!important;
+  font-size:clamp(7px,.5vw,9px)!important;
+}
+
+/* Bottom info + ticker */
+.utility-row{
+  height:8.1vh!important;
+  padding:.3vh 2vw!important;
+  grid-template-columns:31% 36% 33%!important;
+  gap:0!important;
+}
+.daily-brief,.motto-panel,.quick-links{
+  border-radius:0!important;
+  clip-path:none!important;
+  min-height:0!important;
+  border:0!important;
+  border-top:1px solid #253b4d!important;
+  background:#06121e!important;
+}
+.daily-brief{
+  grid-template-columns:auto auto 1fr!important;
+  padding:.6vh 1vw!important;
+}
+.daily-brief .utility-arrow{display:none!important}
+.mic-icon{color:var(--ccn-orange)!important}
+.motto-panel{
+  border-left:1px solid #304457!important;
+  border-right:1px solid #304457!important;
+}
+.motto-panel strong{font-size:clamp(17px,1.55vw,27px)!important}
+.quick-links{padding:.6vh 1vw!important}
+.quick-links>div{grid-template-columns:repeat(3,1fr)!important}
+.quick-links button:nth-child(n+4){display:none!important}
+.quick-links button{font-size:clamp(7px,.52vw,9px)!important}
+.ticker{
+  height:4.9vh!important;
+  min-height:36px!important;
+  grid-template-columns:14% 1fr 22%!important;
+  border-top:1px solid #294055!important;
+}
+.ticker>strong{color:var(--ccn-orange2)!important}
+
+/* Terms/exit/objective remain readable in the wider left feature */
+.hero-content.terms-mode,.hero-content.exit-mode,.hero-content.objective-mode{
+  width:57%!important;
+}
+.term-grid,.exit-grid{width:100%!important}
+
+/* 55" Edge viewport */
+@media (max-height:950px) and (min-width:1200px){
+  .topbar{height:9.7vh!important;min-height:76px!important}
+  .hero-zone{height:34.2vh!important;min-height:280px!important}
+  .values-strip{height:7.7vh!important}
+  .lineup-zone{height:27.7vh!important}
+  .rail{height:22.2vh!important}
+  .card{height:20.4vh!important}
+  .utility-row{height:8.2vh!important}
+  .ticker{height:4.7vh!important}
+  .hero-content h1{font-size:clamp(34px,3.4vw,56px)!important}
+  .event-content h2{font-size:clamp(28px,2.55vw,43px)!important}
+}
+
+/* Wide-screen fallback: preserve exactly five lineup columns */
+@media (min-width:1500px){
+  .rail{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+}
+
+
+/* ============================================================
+   V20.1 — BROADCAST ICON LIBRARY + SINGLE-ROW LINEUP
+   ============================================================ */
+
+/* Real CCN artwork for the four values */
+.value-icon-img{
+  grid-row:1/3;
+  width:42px;
+  height:42px;
+  object-fit:contain;
+  align-self:center;
+  justify-self:start;
+  margin-right:.8vw;
+  filter:drop-shadow(0 0 7px rgba(255,106,0,.12));
+}
+
+/* Exactly one lineup row. Five cards visible, extras remain horizontal. */
+.rail{
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  grid-template-columns:none!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  scrollbar-width:none!important;
+  scroll-snap-type:x proximity;
+  scroll-padding:0!important;
+  gap:.75vw!important;
+}
+.rail::-webkit-scrollbar{display:none!important}
+.card{
+  flex:0 0 calc((100% - 3vw)/5)!important;
+  width:calc((100% - 3vw)/5)!important;
+  min-width:0!important;
+  scroll-snap-align:start;
+}
+.card:first-child{margin-left:0!important}
+.card:last-child{margin-right:0!important}
+
+/* Artwork sits in the upper visual area of each card */
+.card-artwork{
+  position:absolute!important;
+  z-index:4!important;
+  top:1.2vh!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  width:4.6vw!important;
+  min-width:52px!important;
+  max-width:74px!important;
+  height:6.5vh!important;
+  object-fit:contain!important;
+  opacity:.96!important;
+  filter:drop-shadow(0 7px 12px rgba(0,0,0,.35))!important;
+}
+.card[data-id^="spotlight-"] .card-artwork{
+  left:1vw!important;
+  transform:none!important;
+  width:3vw!important;
+  min-width:38px!important;
+  height:4.4vh!important;
+  opacity:.84!important;
+}
+
+/* Artwork selector in editor */
+.artwork-library-box{
+  border-color:rgba(255,106,0,.34)!important;
+  background:
+    radial-gradient(circle at 90% 5%,rgba(255,106,0,.08),transparent 25%),
+    linear-gradient(145deg,rgba(4,20,42,.93),rgba(2,12,27,.96))!important;
+}
+.artwork-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+@media(max-width:900px){
+  .artwork-grid{grid-template-columns:1fr}
+}
+
+/* Keep the bottom rail completely clear of any extra lineup items */
+.lineup-zone{overflow:hidden!important}
+.utility-row{position:relative!important;z-index:8!important;background:#06121e!important}
+.ticker{z-index:20!important}
+
+/* edge viewport */
+@media(max-height:950px) and (min-width:1200px){
+  .card-artwork{height:5.7vh!important;width:4.2vw!important}
+}
+
+
+/* ============================================================
+   CCN V20.2 — CLEAN BROADCAST TYPOGRAPHY
+   Cleaner condensed display type + readable sans-serif body/card type.
+   Keeps V20.1 layout, icon library, one-row lineup, and all functionality.
+   ============================================================ */
+
+/* Global font hierarchy */
+body,
+button,
+input,
+select,
+textarea,
+label,
+small,
+p,
+span{
+  font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif!important;
+}
+
+.brand-copy strong,
+.hero-content h1,
+.hero-content.recognition-mode h1,
+.event-content h2,
+.count-box b,
+.card-number,
+.motto-panel strong{
+  font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif!important;
+  font-stretch:condensed;
+  font-weight:900!important;
+  letter-spacing:-.35px!important;
+  text-transform:uppercase;
+}
+
+/* Header/nav: cleaner and less poster-like */
+.brand-copy strong{
+  font-size:clamp(38px,3.55vw,58px)!important;
+  line-height:.86!important;
+}
+.brand-copy span{
+  font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif!important;
+  font-weight:800!important;
+  letter-spacing:.35px!important;
+}
+.nav-btn b{
+  font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif!important;
+  font-weight:800!important;
+  letter-spacing:.15px!important;
+  font-size:clamp(11px,.82vw,14px)!important;
+}
+
+/* Hero: cleaner large title, supporting text gets breathing room */
+.hero-content h1,
+.hero-content.recognition-mode h1{
+  font-size:clamp(38px,3.55vw,58px)!important;
+  line-height:.91!important;
+  letter-spacing:-.65px!important;
+  text-shadow:0 4px 16px rgba(0,0,0,.42)!important;
+  max-width:100%;
+}
+.hero-content.recognition-mode .recognition-title-short{
+  font-size:clamp(42px,3.9vw,64px)!important;
+}
+.hero-content.recognition-mode .recognition-title-long{
+  font-size:clamp(36px,3.35vw,55px)!important;
+}
+.hero-content.recognition-mode .recognition-title-xlong{
+  font-size:clamp(31px,2.95vw,49px)!important;
+}
+.hero-content.recognition-mode .recognition-title-xxlong{
+  font-size:clamp(27px,2.55vw,42px)!important;
+}
+.hero-content .synopsis,
+.hero-content.recognition-mode .recognition-detail{
+  font-family:"Helvetica Neue",Arial,sans-serif!important;
+  font-weight:500!important;
+  font-size:clamp(15px,1.02vw,18px)!important;
+  line-height:1.28!important;
+  letter-spacing:0!important;
+}
+.hero-content .callout,
+.event-kicker,
+.card .tag,
+.ticker>strong{
+  font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif!important;
+  font-weight:900!important;
+  letter-spacing:.55px!important;
+}
+
+/* Recognition title treatment closer to reference */
+.hero-content.recognition-mode .recognition-person{
+  font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif!important;
+  font-weight:900!important;
+  font-size:clamp(20px,1.55vw,27px)!important;
+  letter-spacing:.12em!important;
+  line-height:1!important;
+}
+
+/* Event typography */
+.event-content h2{
+  font-size:clamp(30px,2.65vw,45px)!important;
+  line-height:.95!important;
+  letter-spacing:-.45px!important;
+}
+.event-meta{
+  font-family:"Helvetica Neue",Arial,sans-serif!important;
+  font-weight:600!important;
+}
+.count-box b{
+  font-size:clamp(25px,2.25vw,39px)!important;
+  line-height:.9!important;
+  letter-spacing:-.5px!important;
+}
+
+/* Values: title bold condensed, explanation clean sans */
+.values-strip strong{
+  font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif!important;
+  font-weight:900!important;
+  letter-spacing:.2px!important;
+}
+.values-strip small{
+  font-family:"Helvetica Neue",Arial,sans-serif!important;
+  font-weight:600!important;
+  letter-spacing:0!important;
+  line-height:1.15!important;
+}
+
+/* Lineup header */
+.lineup-head h2{
+  font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif!important;
+  font-weight:900!important;
+  letter-spacing:.25px!important;
+}
+
+/* Card typography is the major cleanup */
+.card h3,
+.card h3.card-title-long,
+.card h3.card-title-xlong,
+.card[data-id^="spotlight-"] h3{
+  font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif!important;
+  font-weight:900!important;
+  font-size:clamp(14px,.92vw,17px)!important;
+  line-height:1.03!important;
+  letter-spacing:-.18px!important;
+  text-transform:uppercase!important;
+  max-height:2.2em!important;
+  text-shadow:none!important;
+}
+.card .tag{
+  font-size:clamp(8px,.55vw,10px)!important;
+  color:#d9e0e7!important;
+}
+.card-number{
+  font-size:clamp(16px,1.05vw,20px)!important;
+  line-height:1!important;
+}
+.card-description{
+  font-family:"Helvetica Neue",Arial,sans-serif!important;
+  font-size:clamp(9px,.6vw,11px)!important;
+  line-height:1.18!important;
+  font-weight:500!important;
+  color:#d2d9e0!important;
+}
+
+/* Objective / terms / exits: readable content wins over giant headline */
+.hero-content.objective-mode h1,
+.hero-content.terms-mode h1,
+.hero-content.exit-mode h1{
+  font-size:clamp(30px,2.85vw,47px)!important;
+  line-height:.95!important;
+}
+.term-tile h3{
+  font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif!important;
+  font-weight:900!important;
+  letter-spacing:-.15px!important;
+}
+.term-tile p,
+.exit-tile p,
+.hero-content.objective-mode .synopsis{
+  font-family:"Helvetica Neue",Arial,sans-serif!important;
+  letter-spacing:0!important;
+}
+
+/* Footer/motto typography */
+.daily-brief strong,
+.quick-links strong{
+  font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif!important;
+  font-weight:900!important;
+}
+.daily-brief p,
+.quick-links button{
+  font-family:"Helvetica Neue",Arial,sans-serif!important;
+  letter-spacing:0!important;
+}
+.motto-panel strong{
+  font-size:clamp(17px,1.4vw,24px)!important;
+  letter-spacing:.08em!important;
+}
+
+/* Keep 55" TV readability when Edge chrome reduces height */
+@media (max-height:950px) and (min-width:1200px){
+  .hero-content h1,
+  .hero-content.recognition-mode h1{
+    font-size:clamp(35px,3.25vw,53px)!important;
+  }
+  .event-content h2{
+    font-size:clamp(28px,2.45vw,41px)!important;
+  }
+  .card h3,
+  .card h3.card-title-long,
+  .card h3.card-title-xlong,
+  .card[data-id^="spotlight-"] h3{
+    font-size:clamp(13px,.88vw,16px)!important;
+  }
+}
+
+
+/* ============================================================
+   V20.2.1 — ARTWORK RENDER FIX
+   The artwork library now visibly renders on every lineup card.
+   ============================================================ */
+
+.card{position:relative!important}
+.card-photo{
+  position:absolute!important;
+  inset:0 0 auto 0!important;
+  width:100%!important;
+  height:48%!important;
+  object-fit:cover!important;
+  z-index:0!important;
+}
+.card-shade{
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
+  background:
+    linear-gradient(180deg,rgba(3,10,18,.12) 0%,rgba(3,10,18,.28) 36%,rgba(7,21,34,.96) 58%,#071522 100%)!important;
+  pointer-events:none!important;
+}
+.card-artwork-wrap{
+  position:absolute!important;
+  z-index:5!important;
+  top:1.25vh!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  width:5.2vw!important;
+  min-width:58px!important;
+  max-width:84px!important;
+  height:7.4vh!important;
+  min-height:56px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:.45vh .35vw!important;
+  border-radius:10px!important;
+  background:rgba(2,10,18,.66)!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.28)!important;
+  backdrop-filter:blur(2px)!important;
+}
+.card-artwork{
+  position:static!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:100%!important;
+  object-fit:contain!important;
+  opacity:1!important;
+  transform:none!important;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.32))!important;
+}
+.card-copy{z-index:6!important}
+.card-badge{z-index:7!important}
+.card-progress{z-index:8!important}
+
+/* Recognition cards keep portraits prominent while still showing award artwork */
+.card[data-id^="spotlight-"] .card-artwork-wrap{
+  left:1vw!important;
+  transform:none!important;
+  width:3.4vw!important;
+  min-width:42px!important;
+  max-width:56px!important;
+  height:4.8vh!important;
+  min-height:40px!important;
+  background:rgba(2,10,18,.54)!important;
+}
+
+/* Built-in educational cards use slightly larger symbolic artwork */
+.card[data-id="terms"] .card-artwork-wrap,
+.card[data-id="exit"] .card-artwork-wrap,
+.card[data-id="lesson"] .card-artwork-wrap,
+.card[data-id="objective"] .card-artwork-wrap{
+  width:5.8vw!important;
+  max-width:92px!important;
+  height:7.8vh!important;
+}
+
+/* Announcements: make the bullhorn/siren immediately visible */
+.card[data-id^="announcement-"] .card-artwork-wrap{
+  border-color:rgba(255,106,0,.35)!important;
+  background:rgba(25,8,4,.72)!important;
+}
+
+/* Short Edge viewport */
+@media(max-height:950px) and (min-width:1200px){
+  .card-artwork-wrap{
+    top:.8vh!important;
+    height:6.2vh!important;
+    min-height:48px!important;
+  }
+}
+
+
+/* ============================================================
+   CCN V20.3 — CINEMATIC CARD ART
+   Reference-matched photo-first cards. No floating icon badges.
+   ============================================================ */
+.card.cinematic-card{
+  display:block!important;
+  overflow:hidden!important;
+  background:#071522!important;
+  border:1px solid rgba(136,174,204,.25)!important;
+  border-radius:7px!important;
+  min-width:0!important;
+}
+.card.cinematic-card.active{
+  border-color:#ff6a00!important;
+  box-shadow:0 0 0 1px rgba(255,106,0,.48),0 8px 24px rgba(0,0,0,.28)!important;
+}
+.cinematic-card-media{
+  position:absolute!important;
+  inset:0 0 auto 0!important;
+  height:55%!important;
+  overflow:hidden!important;
+  background:#0a1824!important;
+  z-index:0!important;
+}
+.card.cinematic-card .card-photo{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  transform:none!important;
+  opacity:1!important;
+  filter:saturate(.88) contrast(1.05)!important;
+}
+.cinematic-card-overlay{
+  position:absolute!important;
+  inset:0!important;
+  background:linear-gradient(180deg,rgba(1,7,13,.02) 0%,rgba(1,7,13,.08) 46%,rgba(7,21,34,.88) 100%)!important;
+}
+.card.cinematic-card .card-artwork-wrap,
+.card.cinematic-card .card-artwork{display:none!important}
+.card.cinematic-card .card-copy{
+  position:absolute!important;
+  z-index:5!important;
+  left:0!important;right:0!important;bottom:0!important;
+  height:49%!important;
+  padding:.7vh .8vw .55vh!important;
+  background:linear-gradient(180deg,rgba(7,21,34,.88),#071522 24%)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+}
+.card.cinematic-card .card-label-row{
+  display:flex!important;
+  align-items:center!important;
+  gap:.32vw!important;
+  min-height:1.4vh!important;
+  margin-bottom:.18vh!important;
+}
+.card.cinematic-card .card-number{
+  color:#ff6a00!important;
+  font-size:clamp(10px,.68vw,13px)!important;
+  font-weight:900!important;
+}
+.card.cinematic-card .tag{
+  color:#dfe8ef!important;
+  font-size:clamp(8px,.55vw,10px)!important;
+  line-height:1!important;
+  letter-spacing:.35px!important;
+}
+.card.cinematic-card h3,
+.card.cinematic-card h3.card-title-long,
+.card.cinematic-card h3.card-title-xlong{
+  margin:.08vh 0 .28vh!important;
+  font-size:clamp(13px,.88vw,16px)!important;
+  line-height:1.03!important;
+  color:#fff!important;
+  max-height:2.08em!important;
+  overflow:hidden!important;
+}
+.card.cinematic-card .card-description{
+  display:block!important;
+  margin:0!important;
+  font-size:clamp(8px,.54vw,10.5px)!important;
+  line-height:1.18!important;
+  color:#d2d9df!important;
+  max-height:2.4em!important;
+  overflow:hidden!important;
+}
+.card.cinematic-card .card-badge{
+  z-index:8!important;
+  top:.55vh!important;
+  right:.45vw!important;
+}
+.card.cinematic-card .card-progress{z-index:9!important}
+
+/* Portrait cards: preserve integrated cadet portrait feel */
+.card.cinematic-card[data-id^="spotlight-"] .cinematic-card-media{height:62%!important}
+.card.cinematic-card[data-id^="spotlight-"] .card-photo{
+  object-position:center 22%!important;
+}
+.card.cinematic-card[data-id^="spotlight-"] .card-copy{height:43%!important}
+
+/* Give section artwork/photo the visual weight of the reference mockups */
+.card.cinematic-card[data-id="terms"] .card-photo,
+.card.cinematic-card[data-id="exit"] .card-photo,
+.card.cinematic-card[data-id="lesson"] .card-photo,
+.card.cinematic-card[data-id="objective"] .card-photo{
+  object-position:center!important;
+}
+
+/* The carousel remains one row with five visible cards */
+.rail{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  grid-auto-flow:column!important;
+  grid-auto-columns:calc((100% - 4*var(--rail-gap,12px))/5)!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+}

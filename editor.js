@@ -235,6 +235,268 @@
   }
 
 
+  const universalGalleryLabels = {
+    lesson: "Today's Lesson",
+    objective: "Lesson Objective",
+    terms: "Key Terms",
+    exit: "Exit Questions",
+    event: "Upcoming Event",
+    announcements: "Announcements",
+    spotlights: "Cadet Spotlights",
+    service: "Community Impact"
+  };
+
+  function youtubeIdFromUrl(url){
+    const text=String(url||'').trim();
+    const m=text.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{6,})/);
+    return m?m[1]:'';
+  }
+
+  function newMediaItem(type,src,name=''){
+    return {type,src,name:name||'',loop:false,muted:true};
+  }
+
+  function renderUniversalGalleries(){
+    universalGalleriesWrap.innerHTML='';
+    Object.keys(universalGalleryLabels).forEach(key=>{
+      const gallery=data.galleries[key] || {enabled:false,seconds:5,coverIndex:0,media:[]};
+      const card=document.createElement('div');
+      card.className='universal-gallery-card';
+      card.dataset.galleryKey=key;
+
+      const mediaTiles=(gallery.media||[]).map((item,i)=>{
+        const isImage=item.type==='image';
+        const isVideo=item.type==='video';
+        const isYoutube=item.type==='youtube';
+        const thumb=isYoutube?`https://img.youtube.com/vi/${escapeAttr(item.videoId||youtubeIdFromUrl(item.src))}/hqdefault.jpg`:item.src;
+        return `
+        <div class="gallery-photo-tile ${i===Number(gallery.coverIndex||0)?'cover-photo':''}" data-photo-index="${i}">
+          ${isVideo
+            ? `<video src="${escapeAttr(item.src)}" muted preload="metadata"></video>`
+            : `<img src="${escapeAttr(thumb)}" alt="">`
+          }
+          <div class="gallery-media-type">${isImage?'PHOTO':isVideo?'VIDEO':'YOUTUBE'}</div>
+          <div class="gallery-photo-badge">${i===Number(gallery.coverIndex||0)?'COVER':`ITEM ${i+1}`}</div>
+          <div class="gallery-media-options">
+            ${(isVideo||isYoutube)?`<label><input type="checkbox" data-media-loop ${item.loop?'checked':''}> Loop</label>`:''}
+            ${(isVideo)?`<label><input type="checkbox" data-media-muted ${item.muted!==false?'checked':''}> Muted</label>`:''}
+          </div>
+          <div class="gallery-photo-actions">
+            <button type="button" data-photo-cover>Set Cover</button>
+            <button type="button" data-photo-up ${i===0?'disabled':''}>↑</button>
+            <button type="button" data-photo-down ${i===(gallery.media||[]).length-1?'disabled':''}>↓</button>
+            <button type="button" data-photo-remove>Remove</button>
+          </div>
+        </div>`;
+      }).join('');
+
+      card.innerHTML=`
+        <div class="spotlight-card-head">
+          <div><span class="spotlight-index">SECTION MEDIA</span><strong>${escapeHtml(universalGalleryLabels[key])}</strong></div>
+          <label class="switch-row spotlight-switch"><input type="checkbox" data-gallery-enabled ${gallery.enabled!==false?'checked':''}> Use media gallery on TV</label>
+        </div>
+        <div class="row gallery-settings-row">
+          <label>Seconds per photo<input type="number" min="2" max="20" data-gallery-seconds value="${Number(gallery.seconds||5)}"></label>
+          <label>Media count<input value="${(gallery.media||[]).length}" disabled></label>
+          <label class="upload gallery-upload">Add photos<input type="file" data-gallery-photo-upload accept="image/*" multiple><small>Select multiple photos at once.</small></label>
+          <label class="upload gallery-upload">Add videos<input type="file" data-gallery-video-upload accept="video/mp4,video/webm,video/ogg" multiple><small>MP4/WebM recommended. Large videos may exceed browser storage.</small></label>
+        </div>
+        <div class="youtube-add-row">
+          <label>YouTube link<input data-youtube-url placeholder="https://www.youtube.com/watch?v=..."></label>
+          <button type="button" class="secondary-action" data-add-youtube>Add YouTube Video</button>
+        </div>
+        <div class="gallery-photo-grid">${mediaTiles || '<div class="empty-gallery">No media yet.</div>'}</div>`;
+
+      card.querySelector('[data-gallery-photo-upload]').addEventListener('change',async e=>{
+        const files=[...e.target.files];
+        if(!files.length) return;
+        status.textContent=`Processing ${files.length} photo${files.length===1?'':'s'} for ${universalGalleryLabels[key]}…`;
+        for(const file of files){
+          gallery.media.push(newMediaItem('image',await resizeImage(file,1280,800,.80),file.name));
+        }
+        if(gallery.media.length===files.length) gallery.coverIndex=0;
+        renderUniversalGalleries();
+        status.textContent=`Photos added to ${universalGalleryLabels[key]}. Save to apply.`;
+      });
+
+      card.querySelector('[data-gallery-video-upload]').addEventListener('change',async e=>{
+        const files=[...e.target.files];
+        if(!files.length) return;
+        for(const file of files){
+          if(file.size>12*1024*1024){
+            status.textContent=`${file.name} is over 12 MB. Use a smaller video or YouTube link to avoid browser storage limits.`;
+            continue;
+          }
+          const dataUrl=await new Promise((resolve,reject)=>{
+            const reader=new FileReader();
+            reader.onload=()=>resolve(reader.result);
+            reader.onerror=reject;
+            reader.readAsDataURL(file);
+          });
+          gallery.media.push(newMediaItem('video',dataUrl,file.name));
+        }
+        renderUniversalGalleries();
+        status.textContent=`Videos added to ${universalGalleryLabels[key]}. Save to apply.`;
+      });
+
+      card.querySelector('[data-add-youtube]').addEventListener('click',()=>{
+        const input=card.querySelector('[data-youtube-url]');
+        const url=input.value.trim();
+        const videoId=youtubeIdFromUrl(url);
+        if(!videoId){
+          status.textContent='That does not look like a valid YouTube URL.';
+          return;
+        }
+        gallery.media.push({type:'youtube',src:url,videoId,loop:false,muted:true,name:'YouTube Video'});
+        input.value='';
+        renderUniversalGalleries();
+        status.textContent=`YouTube video added to ${universalGalleryLabels[key]}.`;
+      });
+
+      card.querySelectorAll('.gallery-photo-tile').forEach(tile=>{
+        const i=Number(tile.dataset.photoIndex);
+        tile.querySelector('[data-photo-cover]').addEventListener('click',()=>{
+          gallery.coverIndex=i;renderUniversalGalleries();
+        });
+        tile.querySelector('[data-photo-remove]').addEventListener('click',()=>{
+          gallery.media.splice(i,1);
+          gallery.coverIndex=Math.max(0,Math.min(gallery.coverIndex,gallery.media.length-1));
+          renderUniversalGalleries();
+        });
+        tile.querySelector('[data-photo-up]').addEventListener('click',()=>{
+          if(i>0){
+            [gallery.media[i-1],gallery.media[i]]=[gallery.media[i],gallery.media[i-1]];
+            if(gallery.coverIndex===i) gallery.coverIndex=i-1; else if(gallery.coverIndex===i-1) gallery.coverIndex=i;
+            renderUniversalGalleries();
+          }
+        });
+        tile.querySelector('[data-photo-down]').addEventListener('click',()=>{
+          if(i<gallery.media.length-1){
+            [gallery.media[i+1],gallery.media[i]]=[gallery.media[i],gallery.media[i+1]];
+            if(gallery.coverIndex===i) gallery.coverIndex=i+1; else if(gallery.coverIndex===i+1) gallery.coverIndex=i;
+            renderUniversalGalleries();
+          }
+        });
+        const loop=tile.querySelector('[data-media-loop]');
+        if(loop) loop.addEventListener('change',()=>gallery.media[i].loop=loop.checked);
+        const muted=tile.querySelector('[data-media-muted]');
+        if(muted) muted.addEventListener('change',()=>gallery.media[i].muted=muted.checked);
+      });
+
+      universalGalleriesWrap.appendChild(card);
+    });
+  }
+
+  function collectUniversalGalleries(result){
+    result.galleries=result.galleries||{};
+    universalGalleriesWrap.querySelectorAll('.universal-gallery-card').forEach(card=>{
+      const key=card.dataset.galleryKey;
+      const source=data.galleries[key]||{media:[]};
+      result.galleries[key]={
+        enabled:Boolean(card.querySelector('[data-gallery-enabled]')?.checked),
+        seconds:Math.max(2,Math.min(20,Number(card.querySelector('[data-gallery-seconds]')?.value||5))),
+        coverIndex:Math.max(0,Math.min(Number(source.coverIndex||0),Math.max(0,(source.media||[]).length-1))),
+        media:[...(source.media||[])]
+      };
+    });
+  }
+
+  function newCustomSection(){
+    return {
+      id:`custom-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,
+      enabled:true,
+      showParents:true,
+      group:'learn',
+      label:'Custom Section',
+      title:'New Section',
+      cardTitle:'',
+      description:'',
+      meta:'',
+      callout:'FEATURE',
+      badge:'NEW',
+      showPhoto:true,
+      photo:'assets/ui/event-no-photo.svg'
+    };
+  }
+
+  function renderCustomSections(){
+    customSectionsWrap.innerHTML='';
+    if(!data.customSections.length){
+      customSectionsWrap.innerHTML='<div class="empty-gallery">No custom sections yet. Click <strong>+ Add Custom Section</strong> to create one.</div>';
+      return;
+    }
+    data.customSections.forEach((section,i)=>{
+      const card=document.createElement('div');
+      card.className='custom-section-editor-card';
+      const photoNote=section.photo && String(section.photo).startsWith('data:')?'Custom picture saved':'Default graphic';
+      card.innerHTML=`
+        <div class="spotlight-card-head">
+          <div><span class="spotlight-index">CUSTOM SECTION ${i+1}</span><strong>${escapeHtml(section.title||'New Section')}</strong></div>
+          <div class="spotlight-card-actions">
+            <button type="button" class="move-up-btn" ${i===0?'disabled':''}>↑</button>
+            <button type="button" class="move-down-btn" ${i===data.customSections.length-1?'disabled':''}>↓</button>
+            <button type="button" class="duplicate-btn">Duplicate</button>
+            <button type="button" class="remove-btn">Remove</button>
+          </div>
+        </div>
+
+        <div class="custom-toggle-grid">
+          <label class="switch-row spotlight-switch"><input type="checkbox" data-custom-enabled ${section.enabled!==false?'checked':''}> Show on TV</label>
+          <label class="switch-row spotlight-switch"><input type="checkbox" data-custom-parents ${section.showParents!==false?'checked':''}> Show on Parent View</label>
+          <label class="switch-row spotlight-switch"><input type="checkbox" data-custom-photo ${section.showPhoto!==false?'checked':''}> Show picture</label>
+        </div>
+
+        <div class="row">
+          <label>Navigation category
+            <select data-custom-group>
+              <option value="home" ${section.group==='home'?'selected':''}>Home only</option>
+              <option value="lesson" ${section.group==='lesson'?'selected':''}>Today’s Lesson</option>
+              <option value="learn" ${section.group==='learn'?'selected':''}>Learn</option>
+              <option value="events" ${section.group==='events'?'selected':''}>Events</option>
+              <option value="spotlight" ${section.group==='spotlight'?'selected':''}>Recognition</option>
+            </select>
+          </label>
+          <label>Section label<input data-custom-label value="${escapeAttr(section.label||'')}"></label>
+          <label>Badge<input data-custom-badge value="${escapeAttr(section.badge||'')}"></label>
+          <label>Feature callout<input data-custom-callout value="${escapeAttr(section.callout||'')}"></label>
+        </div>
+
+        <label>Main title<input data-custom-title value="${escapeAttr(section.title||'')}"></label>
+        <label>Short lineup-card title<input data-custom-cardtitle value="${escapeAttr(section.cardTitle||'')}" placeholder="Optional — short title for TV card"></label>
+        <label>Description / main text<textarea data-custom-description>${escapeHtml(section.description||'')}</textarea></label>
+        <label>Details / chips <input data-custom-meta value="${escapeAttr(section.meta||'')}" placeholder="Separate items with • or commas"></label>
+
+        <label class="upload">Section picture
+          <input type="file" data-custom-upload accept="image/*">
+          <small data-custom-photo-status>${photoNote}. A landscape picture works best for the large feature screen.</small>
+        </label>`;
+      card.querySelector('.remove-btn').addEventListener('click',()=>{
+        data.customSections.splice(i,1);renderCustomSections();status.textContent='Custom section removed. Save to apply.';
+      });
+      card.querySelector('.duplicate-btn').addEventListener('click',()=>{
+        const copy=clone(section);
+        copy.id=`custom-${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
+        copy.title=copy.title?`${copy.title} Copy`:'New Section';
+        data.customSections.splice(i+1,0,copy);renderCustomSections();status.textContent='Custom section duplicated.';
+      });
+      card.querySelector('.move-up-btn').addEventListener('click',()=>{
+        if(i>0){[data.customSections[i-1],data.customSections[i]]=[data.customSections[i],data.customSections[i-1]];renderCustomSections();}
+      });
+      card.querySelector('.move-down-btn').addEventListener('click',()=>{
+        if(i<data.customSections.length-1){[data.customSections[i+1],data.customSections[i]]=[data.customSections[i],data.customSections[i+1]];renderCustomSections();}
+      });
+      card.querySelector('[data-custom-upload]').addEventListener('change',async e=>{
+        const file=e.target.files[0];
+        if(file){
+          section.photo=await resizeImage(file,1280,800,.80);
+          card.querySelector('[data-custom-photo-status]').textContent='Custom picture ready. Save CCN Display to apply.';
+          status.textContent=`Picture ready for Custom Section ${i+1}.`;
+        }
+      });
+      customSectionsWrap.appendChild(card);
+    });
+  }
+
   document.getElementById('addTerm').addEventListener('click',()=>{data.keyTerms.push({word:'',definition:''});renderTerms();status.textContent='New term added.'});
   document.getElementById('addQuestion').addEventListener('click',()=>{data.exitQuestions.push('');renderQuestions();status.textContent='New exit question added.'});
   document.getElementById('addUpdate').addEventListener('click',()=>{data.announcements.push({headline:'',detail:'',status:''});renderUpdates();status.textContent='New announcement added.'});
@@ -282,7 +544,8 @@
       cardTitle:card.querySelector('[data-custom-cardtitle]')?.value.trim()||'',
       description:card.querySelector('[data-custom-description]')?.value.trim()||'',
       meta:card.querySelector('[data-custom-meta]')?.value.trim()||'',
-      photo:data.customSections[i]?.photo||'assets/ui/event-no-photo.svg'
+      photo:data.customSections[i]?.photo||'assets/ui/event-no-photo.svg',
+      artwork:card.querySelector('[data-custom-artwork]')?.value||'lesson-board.svg'
     }));
     // V18.9.2: serialize universal media galleries directly inside collectResult.
     result.galleries = result.galleries || {};
