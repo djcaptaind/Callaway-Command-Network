@@ -8,7 +8,7 @@
     "motto": "Motivate • Lead • Achieve",
     "qrImage": "assets/ui/qr-placeholder.svg",
     "lineupTitle": "Today’s Lineup",
-    "updatedAt": "2026-08-24T03:39:44.426Z"
+    "updatedAt": "2026-08-25T00:35:51.737Z"
   },
   "display": {
     "lesson": true,
@@ -52,10 +52,6 @@
       "definition": "Accepting responsibility for your decisions, actions, and their consequences."
     },
     {
-      "word": "Accountability",
-      "definition": "Accepting responsibility for actions and outcomes."
-    },
-    {
       "word": "Professional boundaries",
       "definition": "Limits that preserve appropriate roles and trust."
     },
@@ -69,9 +65,7 @@
     }
   ],
   "exitQuestions": [
-    "Name one action a classmate could have taken to reduce the tension.",
-    "What was the most important moment when this incident could have been prevented?",
-    "What does self-control have to do with leadership?"
+    "When loyalty, tradition, peer pressure, and doing what is right come into conflict, which should guide a leader’s decision—and why?"
   ],
   "announcements": [
     {
@@ -220,7 +214,7 @@
   },
   "fontSizes": {
     "lesson": "auto",
-    "objective": "medium",
+    "objective": "auto",
     "terms": "auto",
     "exit": "auto",
     "event": "auto",
