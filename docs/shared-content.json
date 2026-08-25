@@ -8,7 +8,7 @@
     "motto": "Motivate • Lead • Achieve",
     "qrImage": "assets/ui/qr-placeholder.svg",
     "lineupTitle": "Today’s Lineup",
-    "updatedAt": "2026-08-25T00:45:09.462Z"
+    "updatedAt": "2026-08-25T00:46:11.762Z"
   },
   "display": {
     "lesson": true,
@@ -221,8 +221,8 @@
     "academic": "academic-cap.svg"
   },
   "fontSizes": {
-    "lesson": "medium",
-    "objective": "medium",
+    "lesson": "small",
+    "objective": "small",
     "terms": "auto",
     "exit": "auto",
     "event": "auto",
